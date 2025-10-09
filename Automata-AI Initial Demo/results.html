@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Automata AI — Job Results</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <link rel="stylesheet" href="./styles/results.css" />
+  </head>
+  <body>
+    <header class="topbar">
+      <div class="left-wrap">
+        <a class="brand" href="index.html" aria-label="Go to Home">
+          <svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true">
+            <path
+              d="M12 2l9 5v10l-9 5-9-5V7l9-5zm0 2.3L6 7l6 3.3L18 7 12 4.3zM5 8.2v7.6l6 3.3v-7.6L5 8.2zm14 0l-6 3.3v7.6l6-3.3V8.2z"
+              fill="currentColor"
+            />
+          </svg>
+
+          <span>Automata AI</span>
+        </a>
+
+        <nav class="nav">
+          <a href="dashboard.html" class="nav-link">Dashboard</a>
+          <a href="jobs.html" class="nav-link">Jobs</a>
+          <a href="new_job.html" class="nav-link">New Job</a>
+        </nav>
+      </div>
+
+      <div class="actions">
+        <button
+          id="avatarBtn"
+          class="avatar"
+          aria-haspopup="true"
+          aria-expanded="false"
+          aria-controls="accountMenu"
+        >
+          <span id="avatarInitials">AD</span>
+        </button>
+        <div id="accountMenu" class="menu" role="menu" aria-hidden="true">
+          <div class="menu-header">
+            <div id="menuName">Automata Demo</div>
+            <div id="menuEmail" class="muted">demo@automata.ai</div>
+          </div>
+          <button id="logoutBtn" class="menu-item" role="menuitem">
+            <svg class="hi" viewBox="0 0 24 24" aria-hidden="true">
+              <path
+                d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4M10 17l-5-5 5-5M5 12h14"
+                stroke="currentColor"
+              />
+            </svg>
+            Log out
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <main class="container">
+      <div class="page-head">
+        <div>
+          <h1>Job Results</h1>
+          <p class="muted">
+            Results for job on dataset: <span id="dsName">—</span>
+          </p>
+        </div>
+        <div class="head-actions">
+          <a href="jobs.html" class="btn btn-ghost">
+            <svg class="hi" viewBox="0 0 24 24">
+              <path d="M19 12H5M12 19l-7-7 7-7" stroke="currentColor" />
+            </svg>
+            Back to Jobs
+          </a>
+        </div>
+      </div>
+
+      <section id="empty" class="empty card" hidden>
+        <h2>Job not found</h2>
+        <p class="muted">
+          We couldn’t find that job. Go back to
+          <a class="link" href="jobs.html">Jobs</a>.
+        </p>
+      </section>
+
+      <section id="content" hidden>
+        <div class="grid-results">
+          <div class="stack">
+            <div class="card">
+              <div class="card-head">
+                <div class="icon bubble purple">
+                  <svg class="hi" viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M12 3v8m0 0l3-3m-3 3L9 8" stroke="currentColor" />
+                    <path
+                      d="M4 14v4a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-4M8 14h8"
+                      stroke="currentColor"
+                    />
+                  </svg>
+                </div>
+                <div>
+                  <h3>Model Download</h3>
+                  <p class="muted tight">Get your generated model files.</p>
+                </div>
+              </div>
+              <a id="downloadBtn" class="btn btn-solid wide" href="#" download
+                >Download demo-model.tflite</a
+              >
+              <p id="dlHint" class="tiny"></p>
+            </div>
+
+            <div class="card">
+              <div class="card-head">
+                <div class="icon bubble green">
+                  <svg class="hi" viewBox="0 0 24 24" aria-hidden="true">
+                    <path
+                      d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"
+                      stroke="currentColor"
+                    />
+                    <path
+                      d="M14 2v6h6M9 13h6M9 17h6M9 9h3"
+                      stroke="currentColor"
+                    />
+                  </svg>
+                </div>
+                <div>
+                  <h3>Report</h3>
+                  <p class="muted tight">
+                    View the detailed generation report.
+                  </p>
+                </div>
+              </div>
+              <a
+                id="reportBtn"
+                class="btn btn-soft wide"
+                target="_blank"
+                rel="noopener"
+                href="#"
+                >Open demo-report.pdf</a
+              >
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-head">
+              <div class="icon bubble amber">
+                <svg class="hi" viewBox="0 0 24 24" aria-hidden="true">
+                  <path
+                    d="M12 2a7 7 0 0 0-7 7c0 2.3 1 3.8 2.5 5L8 15v1a3 3 0 0 0 3 3h2a3 3 0 0 0 3-3v-1l.5-.5C18 12.8 19 11.3 19 9a7 7 0 0 0-7-7Z"
+                  />
+                  <path d="M9 18h6" />
+                  <path d="M10 22h4" />
+                </svg>
+              </div>
+              <div>
+                <h3>Deployment Guidance</h3>
+                <p class="muted tight">
+                  Recommendations for deploying this model.
+                </p>
+              </div>
+            </div>
+            <pre id="guidance" class="code"></pre>
+          </div>
+        </div>
+
+        <div class="card">
+          <h3>Metrics</h3>
+          <p class="muted tight">
+            Key performance indicators for the generated model.
+          </p>
+          <div class="table">
+            <div class="trow thead">
+              <div>Metric</div>
+              <div class="right">Value</div>
+            </div>
+            <div class="trow">
+              <div>Accuracy</div>
+              <div class="right" id="accVal">—</div>
+            </div>
+            <div class="trow">
+              <div>Latency</div>
+              <div class="right" id="latVal">—</div>
+            </div>
+            <div class="trow">
+              <div>Model Size</div>
+              <div class="right" id="sizeVal">—</div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <script type="module" src="./scripts/results.js"></script>
+  </body>
+</html>

@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Automata AI — Job Status</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <link rel="stylesheet" href="./styles/status.css" />
+  </head>
+  <body>
+    <header class="topbar">
+      <div class="left-wrap">
+        <a class="brand" href="index.html" aria-label="Go to Home">
+          <svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true">
+            <path
+              d="M12 2l9 5v10l-9 5-9-5V7l9-5zm0 2.3L6 7l6 3.3L18 7 12 4.3zM5 8.2v7.6l6 3.3v-7.6L5 8.2zm14 0l-6 3.3v7.6l6-3.3V8.2z"
+              fill="currentColor"
+            />
+          </svg>
+          <span>Automata AI</span>
+        </a>
+
+        <nav class="nav">
+          <a href="dashboard.html" class="nav-link">Dashboard</a>
+          <a href="jobs.html" class="nav-link">Jobs</a>
+          <a href="new_job.html" class="nav-link">New Job</a>
+        </nav>
+      </div>
+
+      <div class="actions">
+        <button
+          id="avatarBtn"
+          class="avatar"
+          aria-haspopup="true"
+          aria-expanded="false"
+          aria-controls="accountMenu"
+        >
+          <span id="avatarInitials">AD</span>
+        </button>
+        <div id="accountMenu" class="menu" role="menu" aria-hidden="true">
+          <div class="menu-header">
+            <div id="menuName">Automata Demo</div>
+            <div id="menuEmail" class="muted">demo@automata.ai</div>
+          </div>
+          <button id="logoutBtn" class="menu-item" role="menuitem">
+            <svg class="hi" viewBox="0 0 24 24" aria-hidden="true">
+              <path
+                d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4M10 17l-5-5 5-5M5 12h14"
+                stroke="currentColor"
+              />
+            </svg>
+            Log out
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <main class="container">
+      <div class="page-head">
+        <div>
+          <h1>Job Status</h1>
+          <p class="muted">
+            Tracking progress for job on dataset: <span id="dsName">—</span>
+          </p>
+        </div>
+        <div class="head-actions">
+          <a href="jobs.html" class="btn btn-ghost">
+            <svg class="hi" viewBox="0 0 24 24">
+              <path d="M19 12H5M12 19l-7-7 7-7" stroke="currentColor" />
+            </svg>
+            Back to Jobs
+          </a>
+        </div>
+      </div>
+
+      <section id="empty" class="card" hidden>
+        <h2>Job not found</h2>
+        <p class="muted">
+          We couldn’t find that job. Go back to
+          <a class="link" href="jobs.html">Jobs</a>.
+        </p>
+      </section>
+
+      <section id="statusCard" class="card" hidden>
+        <h2 class="card-title">Progress Timeline</h2>
+        <p id="summary" class="muted small"></p>
+
+        <ol
+          id="timeline"
+          class="timeline"
+          role="list"
+          aria-live="polite"
+          aria-relevant="all"
+        >
+        </ol>
+
+        <div id="ctaRow" class="cta-row" hidden>
+          <a id="viewResults" class="btn btn-solid">
+            <svg class="hi" viewBox="0 0 24 24">
+              <path d="M7 7h10M7 12h10M7 17h6" stroke="currentColor" />
+            </svg>
+            View Results
+          </a>
+        </div>
+      </section>
+    </main>
+
+    <script type="module" src="./scripts/status.js"></script>
+  </body>
+</html>

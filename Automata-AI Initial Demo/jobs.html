@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Automata AI — Jobs</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <link rel="stylesheet" href="./styles/jobs.css" />
+  </head>
+  <body>
+    <header class="topbar">
+      <div class="left-wrap">
+        <a class="brand" href="index.html" aria-label="Go to Home">
+          <svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true">
+            <path
+              d="M12 2l9 5v10l-9 5-9-5V7l9-5zm0 2.3L6 7l6 3.3L18 7 12 4.3zM5 8.2v7.6l6 3.3v-7.6L5 8.2zm14 0l-6 3.3v7.6l6-3.3V8.2z"
+              fill="currentColor"
+            />
+          </svg>
+          <span>Automata AI</span>
+        </a>
+
+        <nav class="nav">
+          <a href="dashboard.html" class="nav-link">Dashboard</a>
+          <a href="jobs.html" class="nav-link active">Jobs</a>
+          <a href="new_job.html" class="nav-link">New Job</a>
+        </nav>
+      </div>
+
+      <div class="actions">
+        <button
+          id="avatarBtn"
+          class="avatar"
+          aria-haspopup="true"
+          aria-expanded="false"
+          aria-controls="accountMenu"
+        >
+          <span id="avatarInitials">AD</span>
+        </button>
+
+        <div id="accountMenu" class="menu" role="menu" aria-hidden="true">
+          <div class="menu-header">
+            <div id="menuName">Automata Demo</div>
+            <div id="menuEmail" class="muted">demo@automata.ai</div>
+          </div>
+          <button id="logoutBtn" class="menu-item" role="menuitem">
+            <svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true">
+              <path
+                d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4M10 17l-5-5 5-5M5 12h14"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+            </svg>
+            Log out
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <section class="page-head">
+      <div class="head-left">
+        <h1>Jobs</h1>
+        <p class="muted">View and manage all your model generation jobs.</p>
+      </div>
+      <div class="head-right">
+        <a class="btn btn-solid" href="new_job.html">
+          <svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true">
+            <path
+              d="M12 5v14M5 12h14"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+            />
+          </svg>
+          Create New Job
+        </a>
+      </div>
+    </section>
+
+    <main class="panel">
+      <div class="filters">
+        <div class="search">
+          <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true">
+            <path
+              d="M21 21l-4.35-4.35M10.5 18a7.5 7.5 0 1 1 0-15 7.5 7.5 0 0 1 0 15z"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+            />
+          </svg>
+          <input
+            id="searchInput"
+            type="search"
+            placeholder="Search by dataset name..."
+            aria-label="Search by dataset name"
+          />
+        </div>
+
+        <div class="dropdown" data-name="status">
+          <button
+            class="dropdown-btn"
+            id="statusBtn"
+            aria-haspopup="listbox"
+            aria-expanded="false"
+          >
+            <span id="statusLabel">Status</span>
+            <svg width="16" height="16" viewBox="0 0 24 24">
+              <path
+                d="M6 9l6 6 6-6"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              />
+            </svg>
+          </button>
+          <ul
+            class="dropdown-list"
+            id="statusList"
+            role="listbox"
+            aria-labelledby="statusBtn"
+          >
+            <li data-value="" class="selected">All</li>
+            <li data-value="queued">queued</li>
+            <li data-value="preprocessing">preprocessing</li>
+            <li data-value="training">training</li>
+            <li data-value="optimizing">optimizing</li>
+            <li data-value="packaging">packaging</li>
+            <li data-value="completed">completed</li>
+            <li data-value="failed">failed</li>
+          </ul>
+        </div>
+
+        <div class="dropdown" data-name="type">
+          <button
+            class="dropdown-btn"
+            id="typeBtn"
+            aria-haspopup="listbox"
+            aria-expanded="false"
+          >
+            <span id="typeLabel">Task Type</span>
+            <svg width="16" height="16" viewBox="0 0 24 24">
+              <path
+                d="M6 9l6 6 6-6"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              />
+            </svg>
+          </button>
+          <ul
+            class="dropdown-list"
+            id="typeList"
+            role="listbox"
+            aria-labelledby="typeBtn"
+          >
+            <li data-value="" class="selected">All</li>
+            <li data-value="image">image</li>
+            <li data-value="audio">audio</li>
+            <li data-value="sensor">sensor</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="table">
+        <div class="thead">
+          <div>Status</div>
+          <div>Job Details</div>
+          <div>Device</div>
+          <div>Created</div>
+          <div class="right">Actions</div>
+        </div>
+        <div id="tbody" class="tbody"></div>
+
+        <div id="emptyState" class="empty" hidden>
+          <p>No jobs match your filters.</p>
+          <button id="clearFilters" class="link-btn">Clear filters</button>
+        </div>
+      </div>
+    </main>
+
+    <script type="module" src="./scripts/jobs.js"></script>
+  </body>
+</html>
