@@ -45,47 +45,31 @@ const ALLOWED_STATUS = new Set([
   "completed",
   "failed",
 ]);
-const ALLOWED_TYPES = new Set(["image", "audio", "sensor"]);
+const RUNNING_SET = new Set([
+  "queued",
+  "preprocessing",
+  "training",
+  "optimizing",
+  "packaging",
+]);
 
-function normalizeJob(j, idx = 0) {
-  const id = j?.id || `job_${Date.now().toString(36)}_${idx}`;
-  const datasetName = String(j?.datasetName ?? j?.name ?? "Untitled");
-  const taskType = ALLOWED_TYPES.has(j?.taskType) ? j.taskType : "image";
-  const device = j?.device || "—";
-  const status = ALLOWED_STATUS.has(j?.status) ? j.status : "queued";
-  const createdAt =
-    typeof j?.createdAt === "number" && Number.isFinite(j.createdAt)
-      ? j.createdAt
-      : Date.now();
-  return { id, datasetName, taskType, device, status, createdAt };
-}
-
-function readJobsRaw() {
+function readJobs() {
   try {
     const raw = localStorage.getItem("jobs");
-    return raw ? JSON.parse(raw) : null;
+    const arr = raw ? JSON.parse(raw) : [];
+    return Array.isArray(arr) ? arr : [];
   } catch {
-    return null;
+    return [];
   }
 }
-
-function saveJobs(list) {
-  const normalized = list.map(normalizeJob);
-  localStorage.setItem("jobs", JSON.stringify(normalized));
-  localStorage.setItem("jobs_last_update", String(Date.now()));
-  return normalized;
-}
-
-function loadJobs() {
-  let list = readJobsRaw();
-  if (!Array.isArray(list)) {
-    list = seed.slice();
-    return saveJobs(list);
+function saveSeedIfEmpty() {
+  const arr = readJobs();
+  if (!arr.length) {
+    localStorage.setItem("jobs", JSON.stringify(seed));
+    localStorage.setItem("jobs_last_update", String(Date.now()));
   }
-  return saveJobs(list);
 }
-
-loadJobs();
+saveSeedIfEmpty();
 
 const avatarBtn = document.getElementById("avatarBtn");
 const avatarInitials = document.getElementById("avatarInitials");
@@ -131,23 +115,19 @@ const logoutBtn = document.getElementById("logoutBtn");
   });
 })();
 
-const RUNNING_SET = new Set([
+const RUNNING_KEYS = new Set([
   "queued",
   "preprocessing",
   "training",
   "optimizing",
   "packaging",
 ]);
-
-function readJobs() {
-  try {
-    const raw = localStorage.getItem("jobs");
-    const arr = raw ? JSON.parse(raw) : [];
-    return Array.isArray(arr) ? arr : [];
-  } catch {
-    return [];
-  }
-}
+const els = {
+  total: document.getElementById("statTotal"),
+  running: document.getElementById("statRunning"),
+  completed: document.getElementById("statCompleted"),
+  failed: document.getElementById("statFailed"),
+};
 
 function countsFrom(jobs) {
   let total = jobs.length,
@@ -156,19 +136,12 @@ function countsFrom(jobs) {
     failed = 0;
   for (const j of jobs) {
     const s = j?.status || "";
-    if (RUNNING_SET.has(s)) running++;
+    if (RUNNING_KEYS.has(s)) running++;
     else if (s === "completed") completed++;
     else if (s === "failed") failed++;
   }
   return { total, running, completed, failed };
 }
-
-const els = {
-  total: document.getElementById("statTotal"),
-  running: document.getElementById("statRunning"),
-  completed: document.getElementById("statCompleted"),
-  failed: document.getElementById("statFailed"),
-};
 
 function render() {
   const jobs = readJobs();
@@ -179,6 +152,65 @@ function render() {
   els.failed.textContent = c.failed;
 }
 
+function normalizeStatus(s, fallback) {
+  return ALLOWED_STATUS.has(s) ? s : fallback;
+}
+function mergeSnapshot(local, snap) {
+  if (!snap) return local;
+  const next = normalizeStatus(snap.status || snap.phase, local.status);
+  return {
+    ...local,
+    status: next,
+    phase: snap.phase ?? local.phase,
+    progress:
+      typeof snap.progress === "number" ? snap.progress : local.progress,
+    metrics: snap.metrics || local.metrics,
+    asset_paths: snap.asset_paths || local.asset_paths,
+    model_id: snap.model_id || local.model_id,
+    device_family: snap.device_family || local.device_family,
+    updatedAt: Date.now(),
+  };
+}
+
+async function pollOnce() {
+  const apiBase =
+    localStorage.getItem("api_base") ||
+    new URL(location.href).searchParams.get("api") ||
+    "http://127.0.0.1:8000";
+
+  const list = readJobs();
+  if (!list.length) return;
+
+  const IGNORE_IDS = new Set(["job_1001", "job_1002", "job_1003"]);
+  let changed = false;
+
+  const next = await Promise.all(
+    list.map(async (j) => {
+      const id = j?.id;
+      const s = j?.status || "queued";
+
+      if (!id || IGNORE_IDS.has(id) || !RUNNING_SET.has(s)) return j;
+
+      try {
+        const r = await fetch(`${apiBase}/jobs/${encodeURIComponent(id)}`);
+        if (!r.ok) throw new Error("http " + r.status);
+        const snap = await r.json();
+        const merged = mergeSnapshot(j, snap);
+        if (JSON.stringify(merged) !== JSON.stringify(j)) changed = true;
+        return merged;
+      } catch {
+        return j;
+      }
+    })
+  );
+
+  if (changed) {
+    localStorage.setItem("jobs", JSON.stringify(next));
+    localStorage.setItem("jobs_last_update", String(Date.now()));
+    render();
+  }
+}
+
 window.addEventListener("storage", (e) => {
   if (e.key === "jobs" || e.key === "jobs_last_update") render();
 });
@@ -187,3 +219,5 @@ document.addEventListener("visibilitychange", () => {
 });
 
 render();
+pollOnce();
+setInterval(pollOnce, 4000);

@@ -49,9 +49,10 @@ const logoutBtn = document.getElementById("logoutBtn");
     setOpen(!open);
   });
   document.addEventListener("click", () => open && setOpen(false));
-  document.addEventListener("keydown", (e) => {
-    if (e.key === "Escape") setOpen(false);
-  });
+  document.addEventListener(
+    "keydown",
+    (e) => e.key === "Escape" && setOpen(false)
+  );
   logoutBtn.addEventListener("click", () => {
     clearSession();
     location.href = "./auth.html";
@@ -74,14 +75,12 @@ const submitJob = document.getElementById("submitJob");
 
 const taskCards = Array.from(document.querySelectorAll(".task-card"));
 
-
 const drop = document.getElementById("drop");
 const fileInput = document.getElementById("fileInput");
 const fileInfo = document.getElementById("fileInfo");
 const fileName = document.getElementById("fileName");
 const fileSize = document.getElementById("fileSize");
 const fileClear = document.getElementById("fileClear");
-
 
 const familyDd = document.getElementById("familyDd");
 const familyBtn = document.getElementById("familyBtn");
@@ -98,10 +97,7 @@ const cpuRange = document.getElementById("cpuRange");
 const ramVal = document.getElementById("ramVal");
 const flashVal = document.getElementById("flashVal");
 const cpuVal = document.getElementById("cpuVal");
-
-// NEW: Add an element for the target column input from your HTML
 const targetColumnInput = document.getElementById("targetColumn");
-
 
 const state = {
   step: 1,
@@ -123,7 +119,6 @@ function setStep(n) {
   step3.hidden = n !== 3;
   progressEl.style.width = n === 1 ? "33%" : n === 2 ? "66%" : "100%";
 }
-
 
 taskCards.forEach((card) => {
   card.addEventListener("click", () => {
@@ -147,9 +142,7 @@ next1.addEventListener("click", () => {
   setStep(2);
 });
 
-
 const MAX_SIZE = 500 * 1024 * 1024;
-// MODIFIED: Only allow .csv files since that's what the backend expects
 const ACCEPT_EXTS = [".csv"];
 
 function getExt(name = "") {
@@ -189,7 +182,6 @@ function clearUploadFile() {
 function setUploadFile(file) {
   if (!file) return;
   if (!isAllowed(file)) {
-    // MODIFIED: Updated error message for clarity
     err2.textContent = "Unsupported file type. Please upload a CSV file.";
     clearUploadFile();
     return;
@@ -241,7 +233,6 @@ fileClear.addEventListener("click", (e) => {
 
 back2.addEventListener("click", () => setStep(1));
 next2.addEventListener("click", () => {
-  // MODIFIED: Check for both file and target column
   if (!state.dataset.name) {
     err2.textContent = "Please upload a dataset file.";
     return;
@@ -252,7 +243,6 @@ next2.addEventListener("click", () => {
   }
   setStep(3);
 });
-
 
 const getFamily = (id) => DEVICE_FAMILIES.find((f) => f.id === id) || null;
 const midpoint = ([a, b]) => a + (b - a) / 2;
@@ -397,80 +387,78 @@ cpuRange.addEventListener("input", () => {
 
 back3.addEventListener("click", () => setStep(2));
 
-// MODIFIED: This function now sends to the API and saves to localStorage
 submitJob.addEventListener("click", async () => {
-  // 1. Basic validation
   if (!state.device.familyId) {
     errFamily.textContent = "Please select a device family.";
     return;
   }
   errFamily.textContent = "";
 
-  // 2. Get the file and target column
   const fileToUpload = fileInput.files[0];
   const targetColumn = targetColumnInput.value.trim();
-
   if (!fileToUpload || !targetColumn) {
-      alert("Missing file or target column!");
-      return;
+    alert("Missing file or target column!");
+    return;
   }
 
-  // 3. Prepare for API call
-  const apiUrl = `http://127.0.0.1:8000/train/?target_column=${encodeURIComponent(targetColumn)}`;
-  const formData = new FormData();
-  formData.append('file', fileToUpload);
+  const apiBase = localStorage.getItem("api_base") || "http://127.0.0.1:8000";
+  const apiUrl = `${apiBase}/train`;
 
-  // 4. Show loading state and make the API call
+  const formData = new FormData();
+  formData.append("file", fileToUpload);
+  formData.append("target_column", targetColumn);
+  formData.append("device_family", state.device.familyId);
+  formData.append("ram_kb", ramRange.value);
+  formData.append("flash_mb", flashRange.value);
+  formData.append("cpu_mhz", cpuRange.value);
+
   submitJob.disabled = true;
-  submitJob.textContent = "Training Model...";
+  submitJob.textContent = "Submitting Job...";
 
   try {
-      // --- API CALL ---
-      const response = await fetch(apiUrl, {
-          method: 'POST',
-          body: formData,
-      });
+    const response = await fetch(apiUrl, {
+      method: "POST",
+      body: formData,
+    });
 
-      if (!response.ok) {
-          const errorData = await response.json();
-          throw new Error(errorData.detail || "Training failed.");
-      }
-
-      const result = await response.json();
-      console.log("Training successful:", result);
-
-      // --- LOCALSTORAGE SAVING ---
-      const fam = getFamily(state.device.familyId);
-      const job = {
-          id: result.model_id, // Use the real ID from the API
-          datasetName: state.dataset.name || "Untitled",
-          taskType: state.taskType,
-          device: fam?.name || "—",
-          status: "Completed", // Set status
-          createdAt: Date.now(),
-          accuracy: result.test_set_accuracy, // Store extra info from API
-          modelName: result.model_name
-      };
-
+    if (!response.ok) {
+      let msg = "Failed to submit job.";
       try {
-          const raw = localStorage.getItem("jobs");
-          const list = raw ? JSON.parse(raw) : [];
-          list.push(job);
-          localStorage.setItem("jobs", JSON.stringify(list));
-          localStorage.setItem("jobs_last_update", String(Date.now()));
-      } catch (e) {
-          console.error("Failed to save job to localStorage", e);
-      }
+        const err = await response.json();
+        msg = err.detail || msg;
+      } catch {}
+      throw new Error(msg);
+    }
 
-      // --- REDIRECT ---
-      location.href = `./status.html?id=${encodeURIComponent(result.model_id)}`;
+    const result = await response.json();
+    const jobId = result.job_id || result.model_id || crypto.randomUUID();
 
-  } catch (error) {
-      console.error("API Error:", error);
-      alert(`An error occurred: ${error.message}`);
-      // Restore button on error
-      submitJob.disabled = false;
-      submitJob.textContent = "Submit Job";
+    const fam = DEVICE_FAMILIES.find((f) => f.id === state.device.familyId);
+    const job = {
+      id: jobId,
+      datasetName: state.dataset.name || "Untitled Dataset",
+      taskType: state.taskType || "generic",
+      device_family: state.device.familyId,
+      device: fam?.name || "Unknown Family",
+      target_column: targetColumn,
+      status: "queued",
+      progress: 0,
+      createdAt: Date.now(),
+      mock: false,
+    };
+
+    const raw = localStorage.getItem("jobs");
+    const list = raw ? JSON.parse(raw) : [];
+    list.push(job);
+    localStorage.setItem("jobs", JSON.stringify(list));
+    localStorage.setItem("jobs_last_update", String(Date.now()));
+
+    location.href = `./status.html?id=${encodeURIComponent(jobId)}`;
+  } catch (err) {
+    console.error("Submit failed:", err);
+    alert(`Error: ${err.message}`);
+    submitJob.disabled = false;
+    submitJob.textContent = "Submit Job";
   }
 });
 

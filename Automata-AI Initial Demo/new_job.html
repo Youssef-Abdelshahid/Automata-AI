@@ -175,16 +175,23 @@
           </div>
         </div>
         <div id="fileInfo" class="file-info" hidden style="display: none">
-          <span id="fileName"></span>
-          <span id="fileSize" class="muted"></span>
+          <span id="fileName">File Name Here</span>
+          <span id="fileSize" class="muted">(1.2 MB)</span>
           <button id="fileClear" class="link-btn" type="button">Remove</button>
-        </div>
 
-        <div class="form-group">
-  <label for="targetColumn" class="form-label">Target Column</label>
-  <input type="text" id="targetColumn" class="form-control" placeholder="e.g., Test Results">
-  <p class="form-note">Enter the exact name of the column you want to predict.</p>
-</div>
+          <div class="target-column-group">
+            <label for="targetColumn" class="form-label">Target Column</label>
+            <p class="form-note">
+              Enter the exact name of the column you want to predict.
+            </p>
+            <input
+              type="text"
+              id="targetColumn"
+              class="form-control"
+              placeholder="e.g., Test Results"
+            />
+          </div>
+        </div>
 
         <div class="actions-row">
           <button id="back2" class="btn btn-ghost">

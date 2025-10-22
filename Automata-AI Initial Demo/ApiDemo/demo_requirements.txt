@@ -1,0 +1,17 @@
+fastapi
+uvicorn[standard]
+scikit-learn
+pandas
+numpy
+joblib
+python-multipart
+reportlab
+onnx 
+skl2onnx 
+tensorflow
+
+
+#pip install -r demo_requirements.txt
+
+#for running:
+#uvicorn main:app --reload

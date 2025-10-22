@@ -43,10 +43,10 @@ const logoutBtn = document.getElementById("logoutBtn");
     setOpen(!open);
   });
   document.addEventListener("click", () => open && setOpen(false));
-  document.addEventListener("keydown", (e) => {
-    if (e.key === "Escape") setOpen(false);
-  });
-
+  document.addEventListener(
+    "keydown",
+    (e) => e.key === "Escape" && setOpen(false)
+  );
   logoutBtn.addEventListener("click", () => {
     clearSession();
     location.href = "./auth.html";
@@ -89,6 +89,13 @@ const ALLOWED_STATUS = new Set([
   "completed",
   "failed",
 ]);
+const RUNNING_SET = new Set([
+  "queued",
+  "preprocessing",
+  "training",
+  "optimizing",
+  "packaging",
+]);
 const ALLOWED_TYPES = new Set(["image", "audio", "sensor"]);
 
 function normalizeJob(j, idx = 0) {
@@ -101,7 +108,7 @@ function normalizeJob(j, idx = 0) {
     typeof j?.createdAt === "number" && Number.isFinite(j.createdAt)
       ? j.createdAt
       : Date.now();
-  return { id, datasetName, taskType, device, status, createdAt };
+  return { ...j, id, datasetName, taskType, device, status, createdAt };
 }
 
 function readJobsRaw() {
@@ -121,13 +128,12 @@ function saveJobs(list) {
 }
 
 function loadJobs() {
-
   let list = readJobsRaw();
   if (!Array.isArray(list)) {
     list = seed.slice();
     return saveJobs(list);
   }
-  return saveJobs(list); 
+  return saveJobs(list);
 }
 
 const searchInput = document.getElementById("searchInput");
@@ -169,7 +175,6 @@ let dropdownGlobalListenerInstalled = false;
 
 function setupDropdown(btn, list, labelEl, key) {
   const parent = btn.parentElement;
-
   btn.addEventListener("click", (e) => {
     e.preventDefault();
     e.stopPropagation();
@@ -178,7 +183,6 @@ function setupDropdown(btn, list, labelEl, key) {
     parent.classList.toggle("open", willOpen);
     btn.setAttribute("aria-expanded", String(willOpen));
   });
-
   parent.addEventListener("click", (e) => e.stopPropagation());
   list.addEventListener("click", (e) => e.stopPropagation());
 
@@ -187,9 +191,10 @@ function setupDropdown(btn, list, labelEl, key) {
     document.addEventListener("click", () => closeAllDropdowns(), {
       passive: true,
     });
-    document.addEventListener("keydown", (e) => {
-      if (e.key === "Escape") closeAllDropdowns();
-    });
+    document.addEventListener(
+      "keydown",
+      (e) => e.key === "Escape" && closeAllDropdowns()
+    );
   }
 
   list.querySelectorAll("li").forEach((li) => {
@@ -233,7 +238,6 @@ function setupDropdown(btn, list, labelEl, key) {
 
 let jobs = loadJobs();
 let filters = getParams();
-
 const statusDd = setupDropdown(statusBtn, statusList, statusLabel, "status");
 const typeDd = setupDropdown(typeBtn, typeList, typeLabel, "type");
 
@@ -246,33 +250,20 @@ function relativeTime(ts) {
   const days = Math.round(hrs / 24);
   return `about ${days} day${days === 1 ? "" : "s"} ago`;
 }
-function escapeHtml(s) {
-  const str = s == null ? "" : String(s);
-  return str.replace(
-    /[&<>"']/g,
-    (m) =>
-      ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[
-        m
-      ])
-  );
-}
 function capitalize(s) {
   const str = s == null ? "" : String(s);
   return str.charAt(0).toUpperCase() + str.slice(1);
 }
 
 function render() {
+  jobs = loadJobs();
   searchInput.value = filters.q || "";
   statusDd.setValue(filters.status || "");
   typeDd.setValue(filters.type || "");
 
-  let list = jobs.slice().sort((a, b) => {
-    const diff = (b.createdAt || 0) - (a.createdAt || 0);
-    return diff !== 0
-      ? diff
-      : String(a.datasetName || "").localeCompare(String(b.datasetName || ""));
-  });
-
+  let list = jobs
+    .slice()
+    .sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
   if (filters.q)
     list = list.filter((j) =>
       (j.datasetName || "").toLowerCase().includes(filters.q.toLowerCase())
@@ -293,41 +284,71 @@ function render() {
       ? `./results.html?id=${encodeURIComponent(j.id)}`
       : `./status.html?id=${encodeURIComponent(j.id)}`;
     const actionText = isCompleted ? "Results" : "Status";
-    const actionIcon = isCompleted
-      ? `<svg width="16" height="16" viewBox="0 0 24 24"><path d="M8 8h12v12H8zM4 4h12v12H4z" fill="none" stroke="currentColor" stroke-width="2"/></svg>`
-      : `<svg width="16" height="16" viewBox="0 0 24 24"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7S1 12 1 12z" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="12" r="3" fill="currentColor"/></svg>`;
 
     const row = document.createElement("div");
     row.className = "trow";
-
-    const c1 = document.createElement("div");
-    c1.innerHTML = `<span class="pill ${
-      j.status
-    }"><span class="dot"></span> ${capitalize(j.status)}</span>`;
-
-    const c2 = document.createElement("div");
-    c2.innerHTML = `
-      <a class="filename" href="${actionHref}">${escapeHtml(j.datasetName)}</a>
-      <div class="meta">
-        <svg width="16" height="16" viewBox="0 0 24 24"><path d="M4 4h16v16H4z" fill="none" stroke="currentColor" stroke-width="2"/></svg>
-        ${capitalize(j.taskType)}
-      </div>`;
-
-    const c3 = document.createElement("div");
-    c3.textContent = j.device || "—";
-    const c4 = document.createElement("div");
-    c4.textContent = relativeTime(j.createdAt);
-
-    const c5 = document.createElement("div");
-    c5.className = "right";
-    const btn = document.createElement("a");
-    btn.className = "btn-ghost";
-    btn.href = actionHref;
-    btn.innerHTML = `${actionIcon} ${actionText}`;
-    c5.appendChild(btn);
-
-    [c1, c2, c3, c4, c5].forEach((el) => row.appendChild(el));
+    row.innerHTML = `
+      <div><span class="pill ${
+        j.status
+      }"><span class="dot"></span> ${capitalize(j.status)}</span></div>
+      <div>
+        <a class="filename" href="${actionHref}">${j.datasetName}</a>
+        <div class="meta">${capitalize(j.taskType)}</div>
+      </div>
+      <div>${j.device || "—"}</div>
+      <div>${relativeTime(j.createdAt)}</div>
+      <div class="right"><a class="btn-ghost" href="${actionHref}">${actionText}</a></div>`;
     tbody.appendChild(row);
+  }
+}
+
+function mergeSnapshot(local, snap) {
+  if (!snap) return local;
+  return {
+    ...local,
+    status: snap.status || snap.phase || local.status,
+    phase: snap.phase || local.phase,
+    progress:
+      typeof snap.progress === "number" ? snap.progress : local.progress,
+    metrics: snap.metrics || local.metrics,
+    model_id: snap.model_id || local.model_id,
+    asset_paths: snap.asset_paths || local.asset_paths,
+    updatedAt: Date.now(),
+  };
+}
+
+async function pollOnce() {
+  const apiBase =
+    localStorage.getItem("api_base") ||
+    new URL(location.href).searchParams.get("api") ||
+    "http://127.0.0.1:8000";
+
+  const IGNORE_IDS = new Set(["job_1001", "job_1002", "job_1003"]);
+  const current = readJobsRaw();
+  if (!Array.isArray(current) || !current.length) return;
+
+  let changed = false;
+  const updated = await Promise.all(
+    current.map(async (j) => {
+      const id = j?.id;
+      const status = j?.status || "queued";
+      if (!id || IGNORE_IDS.has(id) || !RUNNING_SET.has(status)) return j;
+      try {
+        const r = await fetch(`${apiBase}/jobs/${encodeURIComponent(id)}`);
+        if (!r.ok) throw new Error("http " + r.status);
+        const snap = await r.json();
+        const merged = mergeSnapshot(j, snap);
+        if (JSON.stringify(merged) !== JSON.stringify(j)) changed = true;
+        return merged;
+      } catch {
+        return j;
+      }
+    })
+  );
+
+  if (changed) {
+    saveJobs(updated);
+    render();
   }
 }
 
@@ -344,19 +365,6 @@ document.addEventListener("visibilitychange", () => {
   }
 });
 
-window.JOBS_API = {
-  add(job) {
-    const current = readJobsRaw();
-    const list = Array.isArray(current) ? current : [];
-    const added = normalizeJob(job, list.length);
-    list.push(added);
-    jobs = saveJobs(list); 
-    render();
-    return added;
-  },
-};
-
-
 searchInput.addEventListener("input", (e) => {
   filters.q = e.target.value;
   setParams(filters);
@@ -369,3 +377,5 @@ clearFilters.addEventListener("click", () => {
 });
 
 render();
+pollOnce();
+setInterval(pollOnce, 4000);
