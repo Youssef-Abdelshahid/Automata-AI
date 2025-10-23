@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width,initial-scale=1" />
     <link rel="stylesheet" href="./styles/results.css" />
   </head>
+
   <body>
     <header class="topbar">
       <div class="left-wrap">
@@ -165,7 +166,7 @@
           <p class="muted tight">
             Key performance indicators for the generated model.
           </p>
-          <div class="table">
+          <div class="table" id="metricsTable">
             <div class="trow thead">
               <div>Metric</div>
               <div class="right">Value</div>
@@ -175,12 +176,20 @@
               <div class="right" id="accVal">—</div>
             </div>
             <div class="trow">
-              <div>Latency</div>
-              <div class="right" id="latVal">—</div>
+              <div>Latency (Before Optimizing)</div>
+              <div class="right" id="latBeforeVal">—</div>
             </div>
             <div class="trow">
-              <div>Model Size</div>
-              <div class="right" id="sizeVal">—</div>
+              <div>Latency (After Optimizing)</div>
+              <div class="right" id="latAfterVal">—</div>
+            </div>
+            <div class="trow">
+              <div>Model Size (Before Optimizing)</div>
+              <div class="right" id="sizeBeforeVal">—</div>
+            </div>
+            <div class="trow">
+              <div>Model Size (After Optimizing)</div>
+              <div class="right" id="sizeAfterVal">—</div>
             </div>
           </div>
         </div>

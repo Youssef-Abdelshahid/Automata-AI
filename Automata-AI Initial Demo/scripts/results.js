@@ -27,9 +27,9 @@ const logoutBtn = document.getElementById("logoutBtn");
     .join("")
     .toUpperCase()
     .slice(0, 2);
-  avatarInitials && (avatarInitials.textContent = initials || "AD");
-  menuName && (menuName.textContent = name);
-  menuEmail && (menuEmail.textContent = email);
+  if (avatarInitials) avatarInitials.textContent = initials || "AD";
+  if (menuName) menuName.textContent = name;
+  if (menuEmail) menuEmail.textContent = email;
 
   let open = false;
   function setOpen(v) {
@@ -112,6 +112,7 @@ const IGNORE_IDS = new Set(["job_1001", "job_1002", "job_1003"]);
 (function ensureMockResults() {
   const { id } = getParams();
   if (id && !IGNORE_IDS.has(id)) return;
+
   const list = loadJobs();
   const idx = list.findIndex((j) => j.id === "job_1002");
   const demo = {
@@ -121,7 +122,15 @@ const IGNORE_IDS = new Set(["job_1001", "job_1002", "job_1003"]);
     device: "High-Performance SBCs",
     status: "completed",
     createdAt: Date.now() - 2 * 24 * 60 * 60 * 1e3,
-    metrics: { accuracy: 92.03, latencyMs: 13.5, sizeKB: 98 },
+    metrics: {
+      accuracy: 92.03,
+      latencyMs: 13.5,
+      latencyMsBefore: 18.9,
+      latencyMsAfter: 13.5,
+      sizeKB: 98,
+      sizeKBBefore: 120,
+      sizeKBAfter: 98,
+    },
     reportUrl: "assets/demo-report.pdf",
     modelUrl: "assets/demo-model.tflite",
     model_name: "DemoNet",
@@ -146,8 +155,29 @@ const dlHint = document.getElementById("dlHint");
 const reportBtn = document.getElementById("reportBtn");
 const guidanceEl = document.getElementById("guidance");
 const accVal = document.getElementById("accVal");
-const latVal = document.getElementById("latVal");
-const sizeVal = document.getElementById("sizeVal");
+const latBeforeVal = document.getElementById("latBeforeVal");
+const latAfterVal = document.getElementById("latAfterVal");
+const sizeBeforeVal = document.getElementById("sizeBeforeVal");
+const sizeAfterVal = document.getElementById("sizeAfterVal");
+
+function ensureMetricRow(id, label) {
+  let valEl = document.getElementById(id);
+  if (valEl) return valEl;
+  const table = document.querySelector("#metricsTable tbody, #metricsTable");
+  if (!table) return null;
+
+  const tr = document.createElement("tr");
+  const tdL = document.createElement("td");
+  const tdR = document.createElement("td");
+  tdL.textContent = label;
+  valEl = document.createElement("span");
+  valEl.id = id;
+  tdR.appendChild(valEl);
+  tr.appendChild(tdL);
+  tr.appendChild(tdR);
+  table.appendChild(tr);
+  return valEl;
+}
 
 function buildGuidance(job) {
   if (job.guidance) return job.guidance;
@@ -205,17 +235,17 @@ async function ensureModelExt(job) {
 }
 
 function buildModelAssetPath(job) {
-  const jobId = job.id,
-    modelId = job.model_id || job.modelId,
-    ext = job?.export_summary?.saved_as || "";
+  const jobId = job.id;
+  const modelId = job.model_id || job.modelId;
+  const ext = job?.export_summary?.saved_as || "";
   if (!jobId || !modelId || !ext) return null;
   return `assets/${encodeURIComponent(jobId)}/models/${encodeURIComponent(
     modelId
   )}${ext}`;
 }
 function buildReportPdfPath(job) {
-  const jobId = job.id,
-    modelId = job.model_id || job.modelId;
+  const jobId = job.id;
+  const modelId = job.model_id || job.modelId;
   if (!jobId || !modelId) return null;
   return `assets/${encodeURIComponent(jobId)}/reports/${encodeURIComponent(
     modelId
@@ -224,18 +254,17 @@ function buildReportPdfPath(job) {
 
 async function render(job) {
   if (!job) {
-    empty && (empty.hidden = false);
-    content && (content.hidden = true);
+    if (empty) empty.hidden = false;
+    if (content) content.hidden = true;
     return;
   }
-  empty && (empty.hidden = true);
-  content && (content.hidden = false);
+  if (empty) empty.hidden = true;
+  if (content) content.hidden = false;
 
   const datasetRaw = job.datasetName || "Untitled";
-  dsNameEl && (dsNameEl.textContent = datasetRaw);
-
-  subTitle &&
-    (subTitle.textContent = job.model_name ? `Model: ${job.model_name}` : "");
+  if (dsNameEl) dsNameEl.textContent = datasetRaw;
+  if (subTitle)
+    subTitle.textContent = job.model_name ? `Model: ${job.model_name}` : "";
 
   const isMock = IGNORE_IDS.has(job.id);
   const isDone = job.status === "completed";
@@ -249,14 +278,16 @@ async function render(job) {
 
   const guessedExt = (job?.export_summary?.saved_as || "").replace(/^\./, "");
   const modelFileLabel =
-    modelPath && guessedExt ? `${job.model_name}.${guessedExt}` : "pending";
-  const reportFileLabel = `Job report.pdf`;
+    modelPath && guessedExt
+      ? `${safeName(datasetRaw)}.${guessedExt}`
+      : "pending";
+  const reportFileLabel = `${safeName(datasetRaw)}.pdf`;
 
-  downloadBtn &&
-    (downloadBtn.textContent = modelPath
+  if (downloadBtn)
+    downloadBtn.textContent = modelPath
       ? `Download ${modelFileLabel}`
-      : "Download (pending)");
-  reportBtn && (reportBtn.textContent = `Open ${reportFileLabel}`);
+      : "Download (pending)";
+  if (reportBtn) reportBtn.textContent = `Open ${reportFileLabel}`;
 
   if (isMock) {
     const swallow = (e) => {
@@ -295,55 +326,59 @@ async function render(job) {
       reportBtn.classList.toggle("disabled", !enableReport);
       reportBtn.setAttribute("aria-disabled", String(!enableReport));
     }
-    dlHint &&
-      (dlHint.textContent = enableModel
+    if (dlHint)
+      dlHint.textContent = enableModel
         ? ""
-        : "Model will be available once the job is completed.");
+        : "Model will be available once the job is completed.";
   }
 
-  guidanceEl && (guidanceEl.textContent = buildGuidance(job));
+  if (guidanceEl) guidanceEl.textContent = buildGuidance(job);
 
   const m = job.metrics || {};
+
   const acc = isMock
     ? m.accuracy ?? 92.03
     : m.accuracy ?? m.test_set_accuracy ?? null;
-  const lat = isMock
-    ? m.latencyMs ?? 13.5
-    : m.latencyMs ?? m.latency_ms ?? null;
-  const size = isMock ? m.sizeKB ?? 98 : m.sizeKB ?? m.model_size_kb ?? null;
 
-  accVal &&
-    (accVal.textContent = isMock
-      ? formatPct(acc)
-      : acc == null
-      ? "—"
-      : formatPct(acc));
-  latVal &&
-    (latVal.textContent = isMock
-      ? formatMs(lat)
-      : lat == null
-      ? "—"
-      : formatMs(lat));
-  sizeVal &&
-    (sizeVal.textContent = isMock
-      ? formatKB(size)
-      : size == null
-      ? "—"
-      : formatKB(size));
+  const latBefore = m.latencyMsBefore ?? m.latency_ms_before_optimizing ?? null;
+  const latAfter =
+    m.latencyMsAfter ??
+    m.latency_ms_after_optimizing ??
+    m.latencyMs ??
+    m.latency_ms ??
+    null;
 
-  const toPersistMetrics = isMock
-    ? {
-        accuracy: pctFromRatio(acc),
-        latencyMs: lat,
-        sizeKB: size,
-        model_name: job.model_name || m.model_name,
-      }
-    : {
-        accuracy: m.accuracy ?? m.test_set_accuracy ?? null,
-        latencyMs: m.latencyMs ?? m.latency_ms ?? null,
-        sizeKB: m.sizeKB ?? m.model_size_kb ?? null,
-        model_name: job.model_name || m.model_name || null,
-      };
+  const sizeBeforeKB =
+    m.sizeKBBefore ?? m.model_size_kb_before_optimizing ?? null;
+  const sizeAfterKB =
+    m.sizeKBAfter ??
+    m.model_size_kb_after_optimizing ??
+    m.sizeKB ??
+    m.model_size_kb ??
+    null;
+
+  if (accVal) accVal.textContent = acc == null ? "—" : formatPct(acc);
+  if (latBeforeVal)
+    latBeforeVal.textContent = latBefore == null ? "—" : formatMs(latBefore);
+  if (latAfterVal)
+    latAfterVal.textContent = latAfter == null ? "—" : formatMs(latAfter);
+  if (sizeBeforeVal)
+    sizeBeforeVal.textContent =
+      sizeBeforeKB == null ? "—" : formatKB(sizeBeforeKB);
+  if (sizeAfterVal)
+    sizeAfterVal.textContent =
+      sizeAfterKB == null ? "—" : formatKB(sizeAfterKB);
+
+  const toPersistMetrics = {
+    accuracy: acc,
+    latencyMs: latAfter,
+    latencyMsBefore: latBefore,
+    latencyMsAfter: latAfter,
+    sizeKB: sizeAfterKB,
+    sizeKBBefore: sizeBeforeKB,
+    sizeKBAfter: sizeAfterKB,
+    model_name: job.model_name || m.model_name || null,
+  };
 
   upsertJob({
     ...job,
@@ -356,13 +391,21 @@ async function render(job) {
 let pollTimer = null,
   pollErrors = 0;
 
+function apiBaseUrl() {
+  return (
+    localStorage.getItem("api_base") ||
+    new URL(location.href).searchParams.get("api") ||
+    "http://127.0.0.1:8000"
+  );
+}
+
 async function poll(jobId) {
   if (IGNORE_IDS.has(jobId)) {
     render(findJob(jobId));
     return;
   }
 
-  const base = apiBase();
+  const base = apiBaseUrl();
   const doPoll = async () => {
     const local = findJob(jobId);
     if (local && (local.status === "completed" || local.status === "failed")) {
@@ -404,16 +447,43 @@ async function poll(jobId) {
         device_family: snap.device_family || local?.device_family,
         updatedAt: Date.now(),
       };
+
       if (merged.metrics) {
         merged.metrics = {
           accuracy:
             merged.metrics.accuracy ?? merged.metrics.test_set_accuracy ?? null,
           latencyMs:
-            merged.metrics.latencyMs ?? merged.metrics.latency_ms ?? null,
-          sizeKB: merged.metrics.sizeKB ?? merged.metrics.model_size_kb ?? null,
+            merged.metrics.latencyMs ??
+            merged.metrics.latency_ms_after_optimizing ??
+            merged.metrics.latency_ms ??
+            null,
+          latencyMsBefore:
+            merged.metrics.latencyMsBefore ??
+            merged.metrics.latency_ms_before_optimizing ??
+            null,
+          latencyMsAfter:
+            merged.metrics.latencyMsAfter ??
+            merged.metrics.latency_ms_after_optimizing ??
+            merged.metrics.latency_ms ??
+            null,
+          sizeKB:
+            merged.metrics.sizeKB ??
+            merged.metrics.model_size_kb_after_optimizing ??
+            merged.metrics.model_size_kb ??
+            null,
+          sizeKBBefore:
+            merged.metrics.sizeKBBefore ??
+            merged.metrics.model_size_kb_before_optimizing ??
+            null,
+          sizeKBAfter:
+            merged.metrics.sizeKBAfter ??
+            merged.metrics.model_size_kb_after_optimizing ??
+            merged.metrics.model_size_kb ??
+            null,
           model_name: merged.model_name || merged.metrics.model_name || null,
         };
       }
+
       upsertJob(merged);
       await render(merged);
 

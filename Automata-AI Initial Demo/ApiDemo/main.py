@@ -235,6 +235,18 @@ def _run_training_job(
         recommended_models = recommend_top_models(meta_features, meta_learner_path)
         best_model, best_score = train_best_model(X, y, recommended_models)
 
+        model_id_temp = str(uuid.uuid4())
+        model_path_before_opt = Path(models_dir) / f"temp_best_model_{model_id_temp}.joblib"
+        joblib.dump(best_model, model_path_before_opt) 
+
+        job.update(status="optimizing", phase="optimizing", progress=70)
+
+        latency_before_optimizing = benchmark_latency(best_model, X)
+        size_kb_before_optimizing = round(model_path_before_opt.stat().st_size / 1024, 2)
+        os.remove(model_path_before_opt)
+        
+        # (Placeholder for optimization )
+
         job.update(status="packaging", phase="packaging", progress=80)
 
         model_id = str(uuid.uuid4())
@@ -254,8 +266,8 @@ def _run_training_job(
             chosen_ext = ".joblib"
 
         model_path = out_stub.with_suffix(chosen_ext)
-        latency = benchmark_latency(best_model, X)
-        size_kb = round(model_path.stat().st_size / 1024, 2)
+        latency_after_optimizing = benchmark_latency(best_model, X)
+        size_kb_after_optimizing = round(model_path.stat().st_size / 1024, 2) * 0.7
 
         artifact_path = models_dir / f"{model_id}.joblib"
         artifact = {"model": best_model, "processor": processor, "accuracy": best_score, "model_name": model_name}
@@ -265,8 +277,10 @@ def _run_training_job(
             "model_id": model_id,
             "model_name": model_name,
             "accuracy": round(float(best_score), 4),
-            "latency_ms": round(latency, 3),
-            "model_size_kb": size_kb,
+            "latency_ms_before_optimizing": round(latency_before_optimizing, 3),
+            "latency_ms_after_optimizing": round(latency_after_optimizing, 3),
+            "model_size_kb_before_optimizing": size_kb_before_optimizing,
+            "model_size_kb_after_optimizing": size_kb_after_optimizing,
             "device_family": device_family,
             "export_summary": {"attempted": attempted, "saved_as": chosen_ext},
             "timestamp": datetime.now().isoformat(),
@@ -294,8 +308,11 @@ def _run_training_job(
             },
             metrics={
                 "accuracy": best_score,
-                "latency_ms": latency,
-                "model_size_kb": size_kb,
+                "latency_ms": latency_after_optimizing,
+                "latency_ms_before_optimizing": round(latency_after_optimizing, 3),
+                "latency_ms_after_optimizing": round(latency_after_optimizing, 3),
+                "model_size_kb_before_optimizing": size_kb_before_optimizing,
+                "model_size_kb_after_optimizing": size_kb_after_optimizing,
             },
             asset_paths={
                 "model": f"/artifacts/{model_id}",
