@@ -1,6 +1,7 @@
 import os, io, uuid, time, json, traceback
 from datetime import datetime
 from pathlib import Path
+from typing import Optional
 from typing import List, Dict, Any, Optional
 
 import pandas as pd
@@ -125,32 +126,55 @@ def benchmark_latency(model, X, n_repeats: int = 5):
 
 def try_export(model, X_sample, out_path: Path, ext: str):
     try:
-        if ext == ".onnx" and ONNX_AVAILABLE:
-            initial_type = [("float_input", FloatTensorType([None, X_sample.shape[1]]))]
-            onx = convert_sklearn(model, initial_types=initial_type)
-            out_path = out_path.with_suffix(".onnx")
-            out_path.write_bytes(onx.SerializeToString())
-            return True
-        if ext == ".tflite" and TFLITE_AVAILABLE and isinstance(model, tf.keras.Model):
-            converter = tf.lite.TFLiteConverter.from_keras_model(model)
-            tflite_model = converter.convert()
-            out_path = out_path.with_suffix(".tflite")
-            out_path.write_bytes(tflite_model)
-            return True
-        if ext == ".engine":
-            return False
+        if isinstance(model, tf.keras.Model):
+            if ext in [".tflite", ".bin"]:
+                converter = tf.lite.TFLiteConverter.from_keras_model(model)
+                converter.optimizations = [tf.lite.Optimize.DEFAULT]  
+                tflite_model = converter.convert()
+                out_path = out_path.with_suffix(ext)
+                out_path.write_bytes(tflite_model)
+                print(f"[INFO] Exported quantized TFLite model to {out_path.name} (Arduino-ready)")
+                return True
+            else:
+                print(f"[WARN] Unsupported export extension for Keras model: {ext}")
+                return False
+
+        if ext == ".onnx":
+            try:
+                from skl2onnx import convert_sklearn
+                from skl2onnx.common.data_types import FloatTensorType
+                initial_type = [("float_input", FloatTensorType([None, X_sample.shape[1]]))]
+                onx = convert_sklearn(model, initial_types=initial_type)
+                out_path = out_path.with_suffix(".onnx")
+                out_path.write_bytes(onx.SerializeToString())
+                print(f"[INFO] Exported scikit-learn model to {out_path.name}")
+                return True
+            except Exception as e:
+                print(f"[WARN] ONNX export failed: {e}")
+                return False
+
         if ext == ".bin":
-            joblib.dump(model, out_path.with_suffix(".bin"))
-            return True
-        if ext == ".kmodel":
+            try:
+                import m2cgen as m2c
+                c_code = m2c.export_to_c(model)
+                out_path = out_path.with_suffix(".bin")
+                out_path.write_text(c_code)
+                print(f"[INFO] Exported scikit-learn model as Arduino-ready C code in {out_path.name}")
+                return True
+            except Exception as e:
+                print(f"[WARN] Binary export (C code) failed: {e}")
+                return False
+
+        if ext in [".engine", ".kmodel"]:
+            print(f"[WARN] Export format {ext} not supported for hardware deployment.")
             return False
+
+        print(f"[WARN] Unsupported export extension: {ext}")
         return False
+
     except Exception as e:
         print(f"[WARN] export {ext} failed: {e}")
         return False
-
-from pathlib import Path
-from typing import Optional
 
 def write_pdf_report(report_data: dict, pdf_path: Path, logo_path: Optional[Path] = None):
     try:
@@ -591,7 +615,7 @@ def _run_training_job(
 
         model_path = out_stub.with_suffix(chosen_ext)
         latency_after_optimizing = benchmark_latency(best_model, X)
-        size_kb_after_optimizing = round(model_path.stat().st_size / 1024, 2) * 0.7
+        size_kb_after_optimizing = round(model_path.stat().st_size / 1024, 2)
 
         artifact_path = models_dir / f"{model_id}.joblib"
         artifact = {"model": best_model, "processor": processor, "accuracy": best_score, "model_name": model_name}
@@ -619,7 +643,7 @@ def _run_training_job(
             ),
         }
         (reports_dir / f"{model_id}.json").write_text(json.dumps(report, indent=2))
-        write_pdf_report(report, reports_dir / f"{model_id}.pdf", logo_path=BASE_DIR / "styles" / "logo" / "Automata_AI_Logo.png")
+        write_pdf_report(report, reports_dir / f"{model_id}.pdf", logo_path=BASE_DIR / "styles" / "logo" / "Automata_AI_Logo.webp")
 
         MODEL_REGISTRY[model_id] = {
             "model_name": model_name,

@@ -9,6 +9,9 @@ reportlab
 onnx 
 skl2onnx 
 tensorflow
+onnx_tf
+tensorflow-probability
+m2cgen
 
 
 #pip install -r demo_requirements.txt
