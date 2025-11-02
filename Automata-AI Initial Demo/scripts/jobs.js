@@ -56,7 +56,7 @@ const logoutBtn = document.getElementById("logoutBtn");
 const seed = [
   {
     id: "job_1001",
-    datasetName: "edge_device_families.csv",
+    datasetName: "edge_device_families",
     taskType: "image",
     device: "Ultra-Low-Power MCUs",
     status: "queued",
@@ -64,7 +64,7 @@ const seed = [
   },
   {
     id: "job_1002",
-    datasetName: "acoustic_events_2025.csv",
+    datasetName: "acoustic_events_2025",
     taskType: "audio",
     device: "High-Performance SBCs",
     status: "completed",
@@ -72,7 +72,7 @@ const seed = [
   },
   {
     id: "job_1003",
-    datasetName: "sensor_combo_v2.csv",
+    datasetName: "sensor_combo_v2",
     taskType: "sensor",
     device: "Mid-Range MCUs",
     status: "training",

@@ -192,8 +192,10 @@ function setUploadFile(file) {
     return;
   }
 
+  const [name, extension] = file.name.split(/\.(?=[^\.]+$)/);
   state.dataset = {
-    name: file.name,
+    name,
+    extension: extension ? `.${extension}` : "",
     size: file.size || 0,
     type: file.type || "application/octet-stream",
   };
@@ -210,17 +212,30 @@ drop.addEventListener("keydown", (e) => {
     fileInput.click();
   }
 });
+
 drop.addEventListener("dragover", (e) => {
   e.preventDefault();
   drop.classList.add("dragover");
 });
+
 drop.addEventListener("dragleave", () => drop.classList.remove("dragover"));
+
 drop.addEventListener("drop", (e) => {
   e.preventDefault();
   drop.classList.remove("dragover");
-  const f = e.dataTransfer?.files?.[0];
-  if (f) setUploadFile(f);
+  const files = e.dataTransfer?.files;
+  if (files?.length) {
+    try {
+      fileInput.files = files;
+    } catch {
+      const dt = new DataTransfer();
+      for (const f of files) dt.items.add(f);
+      fileInput.files = dt.files;
+    }
+    setUploadFile(files[0]);
+  }
 });
+
 fileInput.addEventListener("change", (e) => {
   const f = e.target.files?.[0];
   if (f) setUploadFile(f);
@@ -396,10 +411,6 @@ submitJob.addEventListener("click", async () => {
 
   const fileToUpload = fileInput.files[0];
   const targetColumn = targetColumnInput.value.trim();
-  if (!fileToUpload || !targetColumn) {
-    alert("Missing file or target column!");
-    return;
-  }
 
   const apiBase = localStorage.getItem("api_base") || "http://127.0.0.1:8000";
   const apiUrl = `${apiBase}/train`;

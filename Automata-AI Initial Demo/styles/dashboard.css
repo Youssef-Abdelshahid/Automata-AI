@@ -179,6 +179,7 @@ body {
 .btn-ghost:hover {
   background: #f1f1f6;
   box-shadow: 0 6px 16px rgba(0, 0, 0, 0.05);
+  color: var(--text);
 }
 
 .container {

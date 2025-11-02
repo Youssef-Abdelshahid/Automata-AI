@@ -280,17 +280,30 @@ function render(job) {
 }
 
 let demoTimer = null;
+
 function startDemoProgress(jobId) {
   if (!AUTO_DEMO) return;
+
   if (demoTimer) clearInterval(demoTimer);
+
   demoTimer = setInterval(() => {
     const job = getJob(jobId);
     if (!job) return;
+
     if (job.status === "completed" || job.status === "failed") {
       clearInterval(demoTimer);
       demoTimer = null;
+      if (job.status === "completed") {
+        const to = `./results.html?id=${encodeURIComponent(jobId)}`;
+        setTimeout(() => {
+          if (location.pathname.endsWith("status.html")) {
+            location.replace(to);
+          }
+        }, 600);
+      }
       return;
     }
+
     const i = ORDER.indexOf(job.status || "queued");
     const next = ORDER[i + 1] || "completed";
     job.status = next;
@@ -388,7 +401,7 @@ async function pollJob(jobId) {
           const to = `./results.html?id=${encodeURIComponent(jobId)}`;
           setTimeout(() => {
             if (location.pathname.endsWith("status.html")) location.replace(to);
-          }, 600);
+          }, 800);
         }
       }
     } catch {

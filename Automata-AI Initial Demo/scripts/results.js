@@ -117,17 +117,15 @@ const IGNORE_IDS = new Set(["job_1001", "job_1002", "job_1003"]);
   const idx = list.findIndex((j) => j.id === "job_1002");
   const demo = {
     id: "job_1002",
-    datasetName: "acoustic_events_2025.csv",
+    datasetName: "acoustic_events_2025",
     taskType: "audio",
     device: "High-Performance SBCs",
     status: "completed",
     createdAt: Date.now() - 2 * 24 * 60 * 60 * 1e3,
     metrics: {
       accuracy: 92.03,
-      latencyMs: 13.5,
       latencyMsBefore: 18.9,
       latencyMsAfter: 13.5,
-      sizeKB: 98,
       sizeKBBefore: 120,
       sizeKBAfter: 98,
     },
@@ -154,11 +152,11 @@ const downloadBtn = document.getElementById("downloadBtn");
 const dlHint = document.getElementById("dlHint");
 const reportBtn = document.getElementById("reportBtn");
 const guidanceEl = document.getElementById("guidance");
-const accVal = document.getElementById("accVal");
-const latBeforeVal = document.getElementById("latBeforeVal");
-const latAfterVal = document.getElementById("latAfterVal");
-const sizeBeforeVal = document.getElementById("sizeBeforeVal");
-const sizeAfterVal = document.getElementById("sizeAfterVal");
+const accOpt = document.getElementById("accOpt");
+const latBeforeOpt = document.getElementById("latBeforeOpt");
+const latAfterOpt = document.getElementById("latAfterOpt");
+const sizeBeforeOpt = document.getElementById("sizeBeforeOpt");
+const sizeAfterOpt = document.getElementById("sizeAfterOpt");
 
 function ensureMetricRow(id, label) {
   let valEl = document.getElementById(id);
@@ -285,9 +283,9 @@ async function render(job) {
 
   if (downloadBtn)
     downloadBtn.textContent = modelPath
-      ? `Download ${modelFileLabel}`
+      ? `Download` //${modelFileLabel}
       : "Download (pending)";
-  if (reportBtn) reportBtn.textContent = `Open ${reportFileLabel}`;
+  if (reportBtn) reportBtn.textContent = `Open Report`; // ${reportFileLabel}
 
   if (isMock) {
     const swallow = (e) => {
@@ -300,14 +298,14 @@ async function render(job) {
       downloadBtn.onclick = swallow;
       downloadBtn.classList.add("disabled");
       downloadBtn.setAttribute("aria-disabled", "true");
-      downloadBtn.textContent = "Download demo-model.tflite";
+      downloadBtn.textContent = "Download"; // "Download demo-model.tflite"
     }
     if (reportBtn) {
       reportBtn.href = "javascript:void(0)";
       reportBtn.onclick = swallow;
       reportBtn.classList.add("disabled");
       reportBtn.setAttribute("aria-disabled", "true");
-      reportBtn.textContent = "Open demo-report.pdf";
+      reportBtn.textContent = "Open"; // "Open demo-report.pdf"
     }
   } else {
     const enableModel = isDone && !!modelPath;
@@ -336,37 +334,26 @@ async function render(job) {
 
   const m = job.metrics || {};
 
-  const acc = isMock
-    ? m.accuracy ?? 92.03
-    : m.accuracy ?? m.test_set_accuracy ?? null;
+  const acc = isMock ? m.accuracy ?? 92.03 : m.accuracy ?? null;
 
-  const latBefore = m.latencyMsBefore ?? m.latency_ms_before_optimizing ?? null;
-  const latAfter =
-    m.latencyMsAfter ??
-    m.latency_ms_after_optimizing ??
-    m.latencyMs ??
-    m.latency_ms ??
-    null;
+  const latBefore = isMock
+    ? m.latencyMsBefore ?? 18.9
+    : m.latencyMsBefore ?? null;
+  const latAfter = isMock ? m.latencyMsAfter ?? 13.5 : m.latencyMsAfter ?? null;
 
-  const sizeBeforeKB =
-    m.sizeKBBefore ?? m.model_size_kb_before_optimizing ?? null;
-  const sizeAfterKB =
-    m.sizeKBAfter ??
-    m.model_size_kb_after_optimizing ??
-    m.sizeKB ??
-    m.model_size_kb ??
-    null;
+  const sizeBeforeKB = isMock ? m.sizeKBBefore ?? 120 : m.sizeKBBefore ?? null;
+  const sizeAfterKB = isMock ? m.sizeKBAfter ?? 98 : m.sizeKBAfter ?? null;
 
-  if (accVal) accVal.textContent = acc == null ? "—" : formatPct(acc);
-  if (latBeforeVal)
-    latBeforeVal.textContent = latBefore == null ? "—" : formatMs(latBefore);
-  if (latAfterVal)
-    latAfterVal.textContent = latAfter == null ? "—" : formatMs(latAfter);
-  if (sizeBeforeVal)
-    sizeBeforeVal.textContent =
+  if (accOpt) accOpt.textContent = acc == null ? "—" : formatPct(acc);
+  if (latBeforeOpt)
+    latBeforeOpt.textContent = latBefore == null ? "—" : formatMs(latBefore);
+  if (latAfterOpt)
+    latAfterOpt.textContent = latAfter == null ? "—" : formatMs(latAfter);
+  if (sizeBeforeOpt)
+    sizeBeforeOpt.textContent =
       sizeBeforeKB == null ? "—" : formatKB(sizeBeforeKB);
-  if (sizeAfterVal)
-    sizeAfterVal.textContent =
+  if (sizeAfterOpt)
+    sizeAfterOpt.textContent =
       sizeAfterKB == null ? "—" : formatKB(sizeAfterKB);
 
   const toPersistMetrics = {
@@ -374,7 +361,6 @@ async function render(job) {
     latencyMs: latAfter,
     latencyMsBefore: latBefore,
     latencyMsAfter: latAfter,
-    sizeKB: sizeAfterKB,
     sizeKBBefore: sizeBeforeKB,
     sizeKBAfter: sizeAfterKB,
     model_name: job.model_name || m.model_name || null,
@@ -391,21 +377,13 @@ async function render(job) {
 let pollTimer = null,
   pollErrors = 0;
 
-function apiBaseUrl() {
-  return (
-    localStorage.getItem("api_base") ||
-    new URL(location.href).searchParams.get("api") ||
-    "http://127.0.0.1:8000"
-  );
-}
-
 async function poll(jobId) {
   if (IGNORE_IDS.has(jobId)) {
     render(findJob(jobId));
     return;
   }
 
-  const base = apiBaseUrl();
+  const base = apiBase();
   const doPoll = async () => {
     const local = findJob(jobId);
     if (local && (local.status === "completed" || local.status === "failed")) {
@@ -450,36 +428,11 @@ async function poll(jobId) {
 
       if (merged.metrics) {
         merged.metrics = {
-          accuracy:
-            merged.metrics.accuracy ?? merged.metrics.test_set_accuracy ?? null,
-          latencyMs:
-            merged.metrics.latencyMs ??
-            merged.metrics.latency_ms_after_optimizing ??
-            merged.metrics.latency_ms ??
-            null,
-          latencyMsBefore:
-            merged.metrics.latencyMsBefore ??
-            merged.metrics.latency_ms_before_optimizing ??
-            null,
-          latencyMsAfter:
-            merged.metrics.latencyMsAfter ??
-            merged.metrics.latency_ms_after_optimizing ??
-            merged.metrics.latency_ms ??
-            null,
-          sizeKB:
-            merged.metrics.sizeKB ??
-            merged.metrics.model_size_kb_after_optimizing ??
-            merged.metrics.model_size_kb ??
-            null,
-          sizeKBBefore:
-            merged.metrics.sizeKBBefore ??
-            merged.metrics.model_size_kb_before_optimizing ??
-            null,
-          sizeKBAfter:
-            merged.metrics.sizeKBAfter ??
-            merged.metrics.model_size_kb_after_optimizing ??
-            merged.metrics.model_size_kb ??
-            null,
+          accuracy: merged.metrics.accuracy ?? null,
+          latencyMsBefore: merged.metrics.latencyMsBefore ?? null,
+          latencyMsAfter: merged.metrics.latencyMsAfter ?? null,
+          sizeKBBefore: merged.metrics.sizeKBBefore ?? null,
+          sizeKBAfter: merged.metrics.sizeKBAfter ?? null,
           model_name: merged.model_name || merged.metrics.model_name || null,
         };
       }
