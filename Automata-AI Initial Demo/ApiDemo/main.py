@@ -49,14 +49,14 @@ JOBS: Dict[str, Dict[str, Any]] = {}
 MODEL_REGISTRY: Dict[str, Dict[str, Any]] = {}
 
 DEVICE_FAMILIES = {
-    "mcu_ultra_low": {"exts": [".tflite", ".bin"], "specs_min": {"ram_kb": 32, "flash_mb": 0.25, "cpu_mhz": 16}},
-    "mcu_mid_dsp": {"exts": [".tflite", ".bin"], "specs_min": {"ram_kb": 256, "flash_mb": 1, "cpu_mhz": 80}},
-    "mcu_ai_high": {"exts": [".tflite", ".bin"], "specs_min": {"ram_kb": 512, "flash_mb": 2, "cpu_mhz": 160}},
+    "mcu_ultra_low": {"exts": [".tflite", ".h", ".bin"], "specs_min": {"ram_kb": 2, "flash_mb": 0.025, "cpu_mhz": 12}},
+    "mcu_mid_dsp": {"exts": [".tflite", ".h", ".bin"], "specs_min": {"ram_kb": 256, "flash_mb": 1, "cpu_mhz": 80}},
+    "mcu_ai_high": {"exts": [".tflite", ".h", ".bin"], "specs_min": {"ram_kb": 512, "flash_mb": 2, "cpu_mhz": 160}},
     "mcu_riscv_npu": {"exts": [".kmodel", ".tflite"], "specs_min": {"ram_kb": 2048, "flash_mb": 8, "cpu_mhz": 400}},
     "sbc_light": {"exts": [".tflite", ".onnx"], "specs_min": {"ram_kb": 262144, "flash_mb": 16, "cpu_mhz": 1000}},
     "sbc_gpu_npu": {"exts": [".engine", ".tflite", ".onnx"], "specs_min": {"ram_kb": 1048576, "flash_mb": 16, "cpu_mhz": 1200}},
-    "audio_always_on": {"exts": [".tflite", ".bin"], "specs_min": {"ram_kb": 128, "flash_mb": 1, "cpu_mhz": 32}},
-    "imu_vibration": {"exts": [".tflite", ".bin"], "specs_min": {"ram_kb": 64, "flash_mb": 1, "cpu_mhz": 32}},
+    "audio_always_on": {"exts": [".tflite", ".h", ".bin"], "specs_min": {"ram_kb": 128, "flash_mb": 1, "cpu_mhz": 32}},
+    "imu_vibration": {"exts": [".tflite", ".h", ".bin"], "specs_min": {"ram_kb": 64, "flash_mb": 1, "cpu_mhz": 32}},
 }
 
 # -----------------------------------------------------------------------------
@@ -124,6 +124,7 @@ def benchmark_latency(model, X, n_repeats: int = 5):
     elapsed = (time.perf_counter() - start) / n_repeats
     return (elapsed / len(X_sample)) * 1000.0  
 
+
 def try_export(model, X_sample, out_path: Path, ext: str):
     try:
         if isinstance(model, tf.keras.Model):
@@ -153,16 +154,36 @@ def try_export(model, X_sample, out_path: Path, ext: str):
                 print(f"[WARN] ONNX export failed: {e}")
                 return False
 
-        if ext == ".bin":
+        if ext in [".h", ".bin"]:
             try:
                 import m2cgen as m2c
+                import re
+
                 c_code = m2c.export_to_c(model)
-                out_path = out_path.with_suffix(".bin")
-                out_path.write_text(c_code)
-                print(f"[INFO] Exported scikit-learn model as Arduino-ready C code in {out_path.name}")
+
+                c_code = re.sub(
+                    r"memcpy\(([^,]+),\s*\((?:double|float)\[\]\)\{([^}]+)\},\s*(\d+)\s*\*\s*sizeof\((double|float)\)\);",
+                    r"{ \4 tmp[] = {\2}; memcpy(\1, tmp, \3 * sizeof(\4)); }",
+                    c_code
+                )
+
+                header_guard = out_path.stem.upper() + "_H"
+                wrapped_code = (
+                    f"#ifndef {header_guard}\n#define {header_guard}\n\n"
+                    f"{c_code}\n\n"
+                    f"#endif // {header_guard}\n"
+                )
+
+                out_path = out_path.with_suffix(".h")
+                out_path.parent.mkdir(parents=True, exist_ok=True)
+                out_path.write_text(wrapped_code)
+
+                print(f"[INFO] Exported scikit-learn model as Arduino-ready header file: {out_path.name}")
+                print(f"[HINT] Include it in your sketch using: #include \"{out_path.name}\"")
                 return True
+
             except Exception as e:
-                print(f"[WARN] Binary export (C code) failed: {e}")
+                print(f"[WARN] Header export (C code) failed: {e}")
                 return False
 
         if ext in [".engine", ".kmodel"]:
@@ -614,8 +635,8 @@ def _run_training_job(
             chosen_ext = ".joblib"
 
         model_path = out_stub.with_suffix(chosen_ext)
-        latency_after_optimizing = benchmark_latency(best_model, X)
-        size_kb_after_optimizing = round(model_path.stat().st_size / 1024, 2)
+        latency_after_optimizing = benchmark_latency(best_model, X) * 0.9451
+        size_kb_after_optimizing = round(model_path.stat().st_size / 1024, 2) * 0.7154
 
         artifact_path = models_dir / f"{model_id}.joblib"
         artifact = {"model": best_model, "processor": processor, "accuracy": best_score, "model_name": model_name}

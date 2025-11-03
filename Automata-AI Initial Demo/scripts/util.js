@@ -4,9 +4,9 @@ export const DEVICE_FAMILIES = [
     name: "Ultra-Low-Power MCUs",
     note: "≤256 KB RAM, ≤2 MB Flash; always-on sensing",
     specs_hint: {
-      ramKB: [32, 256],
-      flashMB: [0.25, 2],
-      cpuMHz: [16, 120],
+      ramKB: [2, 256],
+      flashMB: [0.025, 2],
+      cpuMHz: [12, 120],
       accelerator: false,
     },
     frameworks: ["TFLite-Micro", "CMSIS-NN"],
