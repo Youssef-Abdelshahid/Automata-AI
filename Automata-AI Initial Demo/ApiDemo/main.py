@@ -16,6 +16,7 @@ from pydantic import BaseModel
 from processing import DataProcessor
 from meta_learning import extract_meta_features, recommend_top_models
 from trainer import train_best_model
+from optimization import optimizing_model
 
 try:
     from skl2onnx import convert_sklearn
@@ -615,6 +616,8 @@ def _run_training_job(
         os.remove(model_path_before_opt)
         
         # (Placeholder for optimization )
+        if False:
+            optimizing_model()
 
         job.update(status="packaging", phase="packaging", progress=80)
 

@@ -10,7 +10,7 @@ export const DEVICE_FAMILIES = [
       accelerator: false,
     },
     frameworks: ["TFLite-Micro", "CMSIS-NN"],
-    model_exts: [".tflite", ".bin"],
+    model_exts: [".tflite", ".bin", ".h"],
   },
   {
     id: "mcu_mid_dsp",
@@ -23,7 +23,7 @@ export const DEVICE_FAMILIES = [
       accelerator: false,
     },
     frameworks: ["TFLite-Micro", "CMSIS-NN"],
-    model_exts: [".tflite", ".bin"],
+    model_exts: [".tflite", ".bin", ".h"],
   },
   {
     id: "mcu_ai_high",
@@ -36,7 +36,7 @@ export const DEVICE_FAMILIES = [
       accelerator: "optional",
     },
     frameworks: ["TFLite-Micro", "CMSIS-NN", "microTVM"],
-    model_exts: [".tflite", ".bin"],
+    model_exts: [".tflite", ".bin", ".h"],
   },
   {
     id: "mcu_riscv_npu",
@@ -88,7 +88,7 @@ export const DEVICE_FAMILIES = [
       accelerator: false,
     },
     frameworks: ["TFLite-Micro", "CMSIS-NN"],
-    model_exts: [".tflite", ".bin"],
+    model_exts: [".tflite", ".bin", ".h"],
   },
   {
     id: "imu_vibration",
@@ -101,6 +101,6 @@ export const DEVICE_FAMILIES = [
       accelerator: false,
     },
     frameworks: ["TFLite-Micro", "CMSIS-NN"],
-    model_exts: [".tflite", ".bin"],
+    model_exts: [".tflite", ".bin", ".h"],
   },
 ];
