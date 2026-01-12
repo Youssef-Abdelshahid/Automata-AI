@@ -3,8 +3,14 @@ venv/
 __pycache__/
 *.pyc
 
-Automata-AI Initial Demo/assets/
-
 .vscode/
 
 .env
+
+Automata-AI Initial Demo/assets/
+
+automl/metadata_collection/sensor_MetaData_creation/checkpoints
+automl/metadata_collection/sensor_MetaData_creation/plan
+automl/metadata_collection/sensor_MetaData_creation/openml_metadata_created.csv
+automl/metadata_collection/sensor_MetaData_creation/sensor_MetaData_creation - with extra comments.ipynb
+automl/metadata_collection/sensor_MetaData_creation - for demo
