@@ -1,0 +1,241 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <title>Automata AI – user profile</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+
+  <link rel="stylesheet" href="./styles/global.css" />
+  <link rel="stylesheet" href="./styles/header.css" />
+  <link rel="stylesheet" href="./styles/user_profile.css" />
+</head>
+
+<body>
+  <header id="header"></header>
+
+  <main class="page-content profile-page">
+    <section class="profile-card">
+      <div class="profile-header">
+        <img
+          src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0iI2NiZDVlMSI+PHBhdGggZD0iTTEyIDJDNi40OCAyIDIgNi40OCAyIDEyczQuNDggMTAgMTAgMTAgMTAtNC40OCAxMC0xMFMxNy41MiAyIDEyIDJ6bTAgM2MxLjY2IDAgMyAxLjM0IDMgM3MtMS4zNCAzLTMgMy0zLTEuMzQtMy0zIDEuMzQtMyAzLTN6bTAgMTQuMmMtMi41IDAtNC43MS0xLjI4LTYtMy4yMi4wMy0xLjk5IDQtMy4wOCA2LTMuMDggMS45OSAwIDUuOTcgMS4wOSA2IDMuMDgtMS4yOSAxLjk0LTMuNSAzLjIyLTYgMy4yMnoiLz48L3N2Zz4="
+          alt="Profile Photo" class="profile-avatar" id="profileAvatarMain" />
+        <div class="profile-names">
+          <h1 class="display-name" id="displayName">Display Name</h1>
+          <p class="username" id="username">@username</p>
+        </div>
+        <button class="btn secondary edit-profile-btn" id="editProfileBtn">
+          Edit Profile
+        </button>
+      </div>
+
+      <p class="profile-bio" id="bio">
+        This is the user bio. Short description about the user goes here.
+      </p>
+
+      <div class="profile-stats">
+        <button class="stat" id="followersBtn">
+          <span class="stat-number" id="followersCount">0</span>
+          <span class="stat-label">Followers</span>
+        </button>
+
+        <button class="stat" id="followingBtn">
+          <span class="stat-number" id="followingCount">0</span>
+          <span class="stat-label">Following</span>
+        </button>
+      </div>
+    </section>
+
+    <section class="tasks-section">
+      <div class="section-header">
+        <h2 class="section-title">My Tasks</h2>
+        <a href="new_task.html" class="btn secondary" id="addTaskBtn"
+          style="text-decoration: none; display: inline-flex; align-items: center; justify-content: center;">
+          + Add Task
+        </a>
+      </div>
+
+      <div class="tasks-list" id="tasksList"></div>
+
+
+    </section>
+  </main>
+
+  <!-- Edit Task Overlay -->
+  <div class="overlay hidden" id="editTaskOverlay">
+    <div class="overlay-card">
+      <div class="overlay-header">
+        <h2>Edit Task</h2>
+        <button class="close-btn" id="closeEditTask">&times;</button>
+      </div>
+
+      <form class="overlay-body" id="editTaskForm">
+        <div class="form-group">
+          <label for="taskTitle">Title</label>
+          <input type="text" id="taskTitle" />
+        </div>
+
+        <div class="form-group">
+          <label for="taskDescription">Description</label>
+          <textarea id="taskDescription" rows="4"></textarea>
+        </div>
+
+        <div class="form-group">
+          <label>Visibility</label>
+          <div class="radio-group">
+            <label class="radio-label">
+              <input type="radio" name="visibility" value="public" id="visPublic">
+              Public
+            </label>
+            <label class="radio-label">
+              <input type="radio" name="visibility" value="private" id="visPrivate">
+              Private
+            </label>
+          </div>
+        </div>
+
+        <div class="form-group" id="collaboratorSection">
+          <label>Shared With</label>
+          <div class="collaborator-input-group" style="position: relative;">
+            <input type="text" id="newCollaboratorInput" placeholder="Enter email or type @ for followers"
+              autocomplete="off" />
+            <button type="button" class="btn secondary small" id="addCollaboratorBtn">Add</button>
+
+            <div id="mentionSuggestions" class="mention-suggestions hidden">
+              <!-- Suggestions injected here -->
+            </div>
+          </div>
+          <div class="collaborator-list" id="collaboratorList">
+            <!-- Collaborators injected here -->
+          </div>
+        </div>
+      </form>
+
+      <div class="overlay-footer space-between">
+        <button class="btn delete-btn" id="deleteTaskBtn" aria-label="Delete Task">
+          <!-- Trash Icon -->
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="3 6 5 6 21 6"></polyline>
+            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+            <line x1="10" y1="11" x2="10" y2="17"></line>
+            <line x1="14" y1="11" x2="14" y2="17"></line>
+          </svg>
+        </button>
+        <div class="action-buttons">
+          <button class="btn secondary" id="cancelEdit">Cancel</button>
+          <button class="btn primary" id="saveTask">Save Changes</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Delete Confirmation Modal -->
+  <div class="overlay hidden" id="deleteConfirmOverlay">
+    <div class="overlay-card small-card">
+      <div class="overlay-header">
+        <h2>Delete Task</h2>
+        <button class="close-btn" id="closeDeleteConfirm">&times;</button>
+      </div>
+      <div class="overlay-body">
+        <p>Are you sure you want to delete this task? This action cannot be undone.</p>
+      </div>
+      <div class="overlay-footer">
+        <button class="btn secondary" id="cancelDelete">Cancel</button>
+        <button class="btn danger" id="confirmDelete">Delete</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Edit Profile Overlay -->
+  <div class="overlay hidden" id="editProfileOverlay">
+    <div class="overlay-card">
+      <div class="overlay-header">
+        <h2>Edit Profile</h2>
+        <button class="close-btn" id="closeEditProfile">&times;</button>
+      </div>
+
+      <form class="overlay-body" id="editProfileForm">
+        <div class="form-group" style="align-items: center;">
+          <div class="avatar-upload-container">
+            <img
+              src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0iI2NiZDVlMSI+PHBhdGggZD0iTTEyIDJDNi40OCAyIDIgNi40OCAyIDEyczQuNDggMTAgMTAgMTAgMTAtNC40OCAxMC0xMFMxNy41MiAyIDEyIDJ6bTAgM2MxLjY2IDAgMyAxLjM0IDMgM3MtMS4zNCAzLTMgMy0zLTEuMzQtMy0zIDEuMzQtMyAzLTN6bTAgMTQuMmMtMi41IDAtNC43MS0xLjI4LTYtMy4yMi4wMy0xLjk5IDQtMy4wOCA2LTMuMDggMS45OSAwIDUuOTcgMS4wOSA2IDMuMDgtMS4yOSAxLjk0LTMuNSAzLjIyLTYgMy4yMnoiLz48L3N2Zz4="
+              alt="Profile Preview" class="profile-avatar-preview" id="profileAvatarPreview" />
+            <div class="avatar-edit-icon" id="triggerAvatarUpload">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 20h9"></path>
+                <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path>
+              </svg>
+            </div>
+            <input type="file" id="profileAvatarInput" accept="image/*" style="display: none;" />
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="profileDisplayName">Display Name</label>
+          <input type="text" id="profileDisplayName" />
+        </div>
+
+        <div class="form-group">
+          <label for="profileUsername">Username</label>
+          <input type="text" id="profileUsername" />
+        </div>
+
+        <div class="form-group">
+          <label for="profileEmail">Email</label>
+          <input type="email" id="profileEmail" />
+        </div>
+
+        <hr style="margin: 16px 0; border: 0; border-top: 1px solid var(--border);" />
+
+        <div class="form-group">
+          <label for="profileOldPassword">Old Password</label>
+          <input type="password" id="profileOldPassword" placeholder="Required to set new password" />
+        </div>
+
+        <div class="form-group">
+          <label for="profileNewPassword">New Password</label>
+          <input type="password" id="profileNewPassword" />
+        </div>
+
+        <div style="text-align: right; margin-bottom: 16px;">
+          <button type="button" class="btn-link" id="forgotPasswordBtn"
+            style="background: none; border: none; color: var(--brand); cursor: pointer; padding: 0; font-size: 0.9rem;">
+            Forgot Password?
+          </button>
+        </div>
+
+        <div class="form-group">
+          <label for="profileBio">Bio</label>
+          <textarea id="profileBio" rows="4"></textarea>
+        </div>
+      </form>
+
+      <div class="overlay-footer">
+        <button class="btn secondary" id="cancelEditProfile">Cancel</button>
+        <button class="btn primary" id="saveProfile">Save Changes</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- User List Overlay (Followers/Following) -->
+  <div class="overlay hidden" id="userListOverlay">
+    <div class="overlay-card small-card">
+      <div class="overlay-header">
+        <h2 id="userListTitle">Users</h2>
+        <button class="close-btn" id="closeUserList">&times;</button>
+      </div>
+      <div class="overlay-body">
+        <div class="user-list" id="userListContainer">
+          <!-- User items will be injected here -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="./scripts/header.js"></script>
+  <script type="module" src="./scripts/user_profile.js"></script>
+</body>
+
+</html>
