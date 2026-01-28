@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>How to Use Automata AI</title>
+  <!-- Navbar CSS -->
+  <link rel="stylesheet" href="./styles/global.css">
+  <link rel="stylesheet" href="./styles/header.css">
+  <link rel="stylesheet" href="./styles/how_to_use.css">
+</head>
+
+<body>
+  <header id="header"></header>
+
+  <section class="page-head">
+    <div class="head-left">
+      <h1>How to Use Automata AI</h1>
+      <p class="muted">Getting started is simple. Follow these steps to generate your first optimized edge AI model.</p>
+    </div>
+  </section>
+
+  <!-- Page Content -->
+  <div id="how-to-use" class="page-content">
+    <section class="content-section">
+
+      <div class="steps">
+        <div class="step">
+          <h3><span class="step-number">1</span> Create Your Account</h3>
+          <p>Sign up for a free account to access the Automata AI platform. Choose a plan that fits your needs, from our
+            free tier for experimentation to enterprise options for production deployments.</p>
+        </div>
+
+        <div class="step">
+          <h3><span class="step-number">2</span> Prepare Your Dataset</h3>
+          <p>Upload your training data in supported formats such as images, sensor readings, or time-series data. Our
+            platform accepts common formats including CSV, images (JPEG, PNG), and binary sensor data. Ensure your data
+            is properly labeled and organized.</p>
+        </div>
+
+        <div class="step interactive-step" id="step3-btn">
+          <h3><span class="step-number">3</span> Define Your Hardware Target</h3>
+          <p>Specify your target device's constraints to ensure the deployed model fits and performs optimally:</p>
+          <ul class="step-list">
+            <li><strong>Memory Limits:</strong> Define maximum Flash (storage) and RAM usage (e.g., &lt;256KB for
+              Cortex-M4).</li>
+            <li><strong>Latency:</strong> Set the maximum allowed inference time (e.g., &lt;100ms for real-time audio).
+            </li>
+            <li><strong>Power Budget:</strong> Specify active power consumption limits (mW) for battery-operated
+              devices.</li>
+            <li><strong>Architecture:</strong> Select specific cores (ARM Cortex-M, RISC-V) to enable hardware-specific
+              optimizations (CMSIS-NN, DSP).</li>
+          </ul>
+          <div class="interact-hint">Click to explore hardware families</div>
+        </div>
+
+        <div class="step" id="step4-btn">
+          <h3><span class="step-number">4</span> Configure Your Model</h3>
+          <p>Select your pipeline type and fine-tune the preprocessing parameters for your data:</p>
+          <div class="pipeline-details">
+            <div class="pipeline-group">
+              <strong>Audio Pipeline</strong>
+              <ul>
+                <li><strong>Sampling Rate:</strong> 16kHz (voice) to 44.1kHz (music).</li>
+                <li><strong>Preprocessing:</strong> MFCCs, MFE, or Spectrograms for feature extraction.</li>
+                <li><strong>Windowing:</strong> Configurable frame size and stride (e.g., 20ms/10ms).</li>
+              </ul>
+            </div>
+            <div class="pipeline-group">
+              <strong>Image Pipeline</strong>
+              <ul>
+                <li><strong>Resolution:</strong> 96x96 to 320x320 pixels (impacts size/speed).</li>
+                <li><strong>Color Mode:</strong> Grayscale (1-channel) or RGB (3-channel).</li>
+                <li><strong>Backbones:</strong> MobileNetV1/V2, ResNet, or reduced-depth custom CNNs.</li>
+              </ul>
+            </div>
+            <div class="pipeline-group">
+              <strong>Sensor Pipeline</strong>
+              <ul>
+                <li><strong>Input Axes:</strong> 3-axis (Accel) to 9-axis (IMU + Mag).</li>
+                <li><strong>Window Size:</strong> Time duration per inference (e.g., 2000ms).</li>
+                <li><strong>Features:</strong> Spectral analysis (FFT), peaks, RMS, and zero-crossing rate.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <div class="step">
+          <h3><span class="step-number">5</span> Let Automata AI Work</h3>
+          <p>Our automated pipeline explores model architectures, trains and optimizes multiple candidates, applies
+            hardware-specific optimizations, and validates performance against your constraints. This process typically
+            takes minutes to hours depending on complexity.</p>
+        </div>
+
+        <div class="step">
+          <h3><span class="step-number">6</span> Download and Deploy</h3>
+          <p>Review model performance metrics and accuracy benchmarks. Download your optimized model in your preferred
+            format (TensorFlow Lite, ONNX, C arrays, etc.). Deploy to your device using our integration guides and
+            example code.</p>
+        </div>
+      </div>
+
+      <h2>Best Practices</h2>
+      <p>For best results, ensure your training dataset is representative of real-world conditions, start with relaxed
+        constraints and tighten as needed, use our validation tools to test models before deployment, and monitor model
+        performance in production and retrain when necessary.</p>
+    </section>
+  </div>
+
+
+
+  <div class="overlay hidden" id="hardwareOverlay">
+    <div class="overlay-card">
+      <div class="overlay-header">
+        <h2>Hardware Families</h2>
+        <button class="close-btn" id="closeHardware">&times;</button>
+      </div>
+      <div class="overlay-body">
+        <div class="info-grid">
+          <!-- 1. Ultra-Low-Power MCUs -->
+          <div class="info-card">
+            <h4>Ultra-Low-Power MCUs</h4>
+            <p>Generic Cortex-M0/M3.</p>
+            <div class="extra-info">
+              <p>For simplest tasks like vibration/temp monitoring.</p>
+              <ul>
+                <li>RAM: 2KB - 256KB</li>
+                <li>Flash: 25KB - 2MB</li>
+                <li><strong>Always-on sensing.</strong></li>
+              </ul>
+            </div>
+          </div>
+
+          <!-- 2. Mid-Range MCUs -->
+          <div class="info-card">
+            <h4>Mid-Range MCUs (DSP)</h4>
+            <p>Cortex-M4F/M33 with DSP.</p>
+            <div class="extra-info">
+              <p>Standard for audio & sensor fusion.</p>
+              <ul>
+                <li>RAM: 256KB - 1MB</li>
+                <li>Flash: 1MB - 8MB</li>
+                <li><strong>SIMD/DSP acceleration.</strong></li>
+              </ul>
+            </div>
+          </div>
+
+          <!-- 3. High-End / AI MCUs -->
+          <div class="info-card">
+            <h4>High-End / AI MCUs</h4>
+            <p>Dual-core, High-Perf.</p>
+            <div class="extra-info">
+              <p>Complex audio, basic vision, voice.</p>
+              <ul>
+                <li>RAM: 512KB - 2MB</li>
+                <li>Flash: 2MB - 16MB</li>
+                <li><strong>CMSIS-NN / MicroTVM.</strong></li>
+              </ul>
+            </div>
+          </div>
+
+          <!-- 4. MCUs with NPU -->
+          <div class="info-card">
+            <h4>MCUs with NPU</h4>
+            <p>RISC-V + Neural Accel.</p>
+            <div class="extra-info">
+              <p>Hardware accelerated interference.</p>
+              <ul>
+                <li>RAM: 2MB - 8MB</li>
+                <li>Flash: 8MB - 16MB</li>
+                <li><strong>Specialized AI Cores.</strong></li>
+              </ul>
+            </div>
+          </div>
+
+          <!-- 5. Lightweight SBCs -->
+          <div class="info-card">
+            <h4>Lightweight SBCs</h4>
+            <p>Raspberry Pi Zero/3 class.</p>
+            <div class="extra-info">
+              <p>Linux-based edge nodes.</p>
+              <ul>
+                <li>RAM: 256MB - 4GB</li>
+                <li>Flash: 16MB - 64MB</li>
+                <li><strong>ONNX / TFLite support.</strong></li>
+              </ul>
+            </div>
+          </div>
+
+          <!-- 6. SBCs with GPU/NPU -->
+          <div class="info-card">
+            <h4>SBCs with GPU/NPU</h4>
+            <p>Jetson Nano, Coral Dev Board.</p>
+            <div class="extra-info">
+              <p>High-throughput video/vision.</p>
+              <ul>
+                <li>RAM: 1GB - 8GB</li>
+                <li>Flash: 16GB - 128GB</li>
+                <li><strong>TensorRT / EdgeTPU.</strong></li>
+              </ul>
+            </div>
+          </div>
+
+          <!-- 7. Always-On Audio MCUs -->
+          <div class="info-card">
+            <h4>Always-On Audio MCUs</h4>
+            <p>Low power keyword spotting.</p>
+            <div class="extra-info">
+              <p>Wake-word detection (KWS).</p>
+              <ul>
+                <li>RAM: 128KB - 512KB</li>
+                <li>Flash: 1MB - 4MB</li>
+                <li><strong>Ultra-low consumption.</strong></li>
+              </ul>
+            </div>
+          </div>
+
+          <!-- 8. IMU/Vibration MCUs -->
+          <div class="info-card">
+            <h4>IMU/Vibration MCUs</h4>
+            <p>Predictive Maintenance.</p>
+            <div class="extra-info">
+              <p>Specialized for high-freq sensors.</p>
+              <ul>
+                <li>RAM: 64KB - 512KB</li>
+                <li>Flash: 1MB - 4MB</li>
+                <li><strong>Tiny models (Anomaly).</strong></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+    <footer class="site-footer">
+      <div class="line"></div>
+      <p>© 2025 Automata AI. All rights reserved.</p>
+    </footer>
+
+  <script type="module" src="./scripts/header.js"></script>
+  <script type="module" src="./scripts/how_to_use.js"></script>
+</body>
+
+</html>

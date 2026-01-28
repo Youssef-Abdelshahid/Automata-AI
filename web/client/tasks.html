@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Automata AI — Tasks</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <link rel="stylesheet" href="./styles/global.css" />
+    <link rel="stylesheet" href="./styles/header.css" />
+    <link rel="stylesheet" href="./styles/tasks.css" />
+  </head>
+  <body>
+    <header id="header"></header>
+
+    <div class="page-content">
+      <section class="page-head">
+        <div class="head-left">
+          <h1>Tasks</h1>
+          <p class="muted">View and manage all your model generation tasks.</p>
+        </div>
+        <div class="head-right">
+          <a class="tasks-btn tasks-btn-solid" href="new_task.html">
+            <svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true">
+              <path
+                d="M12 5v14M5 12h14"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+              />
+            </svg>
+            Create New Task
+          </a>
+        </div>
+      </section>
+
+      <main class="panel">
+        <div class="filters">
+          <div class="search">
+            <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true">
+              <path
+                d="M21 21l-4.35-4.35M10.5 18a7.5 7.5 0 1 1 0-15 7.5 7.5 0 0 1 0 15z"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+              />
+            </svg>
+            <input
+              id="searchInput"
+              type="search"
+              placeholder="Search by dataset name..."
+              aria-label="Search by dataset name"
+            />
+          </div>
+
+          <div class="dropdown" data-name="status">
+            <button
+              class="dropdown-btn"
+              id="statusBtn"
+              aria-haspopup="listbox"
+              aria-expanded="false"
+            >
+              <span id="statusLabel">Status</span>
+              <svg width="16" height="16" viewBox="0 0 24 24">
+                <path
+                  d="M6 9l6 6 6-6"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                />
+              </svg>
+            </button>
+            <ul
+              class="dropdown-list"
+              id="statusList"
+              role="listbox"
+              aria-labelledby="statusBtn"
+            >
+              <li data-value="" class="selected">All</li>
+              <li data-value="queued">queued</li>
+              <li data-value="preprocessing">preprocessing</li>
+              <li data-value="training">training</li>
+              <li data-value="optimizing">optimizing</li>
+              <li data-value="packaging">packaging</li>
+              <li data-value="completed">completed</li>
+              <li data-value="failed">failed</li>
+            </ul>
+          </div>
+
+          <div class="dropdown" data-name="type">
+            <button
+              class="dropdown-btn"
+              id="typeBtn"
+              aria-haspopup="listbox"
+              aria-expanded="false"
+            >
+              <span id="typeLabel">Task Type</span>
+              <svg width="16" height="16" viewBox="0 0 24 24">
+                <path
+                  d="M6 9l6 6 6-6"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                />
+              </svg>
+            </button>
+            <ul
+              class="dropdown-list"
+              id="typeList"
+              role="listbox"
+              aria-labelledby="typeBtn"
+            >
+              <li data-value="" class="selected">All</li>
+              <li data-value="image">image</li>
+              <li data-value="audio">audio</li>
+              <li data-value="sensor">sensor</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="table">
+          <div class="thead">
+            <div>Status</div>
+            <div>Task Title</div>
+            <div>Dataset</div>
+            <div>Type</div>
+            <div>Target Device</div>
+            <div>Created</div>
+            <div class="right">Actions</div>
+          </div>
+          <div id="tbody" class="tbody"></div>
+
+          <div id="emptyState" class="empty" hidden>
+            <p>No tasks match your filters.</p>
+            <button id="clearFilters" class="link-btn">Clear filters</button>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <script type="module" src="./scripts/tasks.js"></script>
+    <script type="module" src="./scripts/header.js"></script>
+  </body>
+</html>

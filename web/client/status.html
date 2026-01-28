@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Automata AI — Task Status</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <link rel="stylesheet" href="./styles/global.css">
+    <link rel="stylesheet" href="./styles/header.css" />
+    <link rel="stylesheet" href="./styles/status.css" />
+  </head>
+  <body>
+<header id="header"></header>
+
+    <main class="container">
+      <div class="page-head">
+        <div>
+          <h1>Task Status</h1>
+          <p class="muted">
+            Tracking progress for task on dataset: <span id="dsName">—</span>
+          </p>
+        </div>
+        <div class="head-actions">
+          <a href="tasks.html" class="status-btn status-btn-ghost">
+            <svg class="hi" viewBox="0 0 24 24">
+              <path d="M19 12H5M12 19l-7-7 7-7" stroke="currentColor" />
+            </svg>
+            Back to Tasks
+          </a>
+        </div>
+      </div>
+
+      <section id="empty" class="card" hidden>
+        <h2>Task not found</h2>
+        <p class="muted">
+          We couldn’t find that task. Go back to
+          <a class="link" href="tasks.html">Tasks</a>.
+        </p>
+      </section>
+
+      <section id="statusCard" class="card" hidden>
+        <h2 class="card-title">Progress Timeline</h2>
+        <p id="summary" class="muted small"></p>
+
+        <ol
+          id="timeline"
+          class="timeline"
+          role="list"
+          aria-live="polite"
+          aria-relevant="all"
+        ></ol>
+
+        <div id="ctaRow" class="cta-row" hidden>
+          <a id="viewResults" class="status-btn status-btn-solid">
+            <svg class="hi" viewBox="0 0 24 24">
+              <path d="M7 7h10M7 12h10M7 17h6" stroke="currentColor" />
+            </svg>
+            View Results
+          </a>
+        </div>
+      </section>
+    </main>
+
+    <script type="module" src="./scripts/status.js"></script>
+  </body>
+</html>

@@ -1,0 +1,108 @@
+:root {
+  --bg: #fdfcff;
+  --bg-2: #efe5ff;
+
+  --card: #fff;
+  --text: #1f1f1f;
+  --muted: #6a6a6a;
+  --brand: #9d2ec5;
+  --brand-600: #ae37da;
+  --border: #e7ddff;
+  --card: #ffffff;
+  --ring: rgba(124, 58, 237, 0.25);
+  --row-hover: #f5f6fa;
+  --glow: rgba(124, 58, 237, 0.22);
+  --white: #fff;
+  --soft-lilac: #eee7ff;
+  --soft-code: #f5efff;
+  --purple-100: #efe8ff;
+  --green-100: #e8fff1;
+  --amber-100: #fff7e6;
+  --pill-queued: #eadcff;
+  --pill-pre: #dce7ff;
+  --pill-train: #dceeff;
+  --pill-opt: #d7fff4;
+  --pill-pack: #fff2d8;
+  --pill-done: #dcfbe7;
+  --pill-fail: #ffe1e1;
+  --row-hover: #ebecec;
+
+  --shadow: 0 10px 30px rgba(124, 58, 237, 0.14);
+  --shadow-deep: 0 12px 36px rgba(124, 58, 237, 0.22);
+  --shadow-strong: 0 16px 40px rgba(124, 58, 237, 0.2);
+
+  --gap: 16px;
+}
+
+.content-section {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 40px 20px 60px;
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+/* Header */
+.header-section {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.header-section h1 {
+  font-size: clamp(32px, 4vw, 42px);
+  margin: 0 0 16px;
+}
+
+.lead {
+  font-size: 1.15rem;
+  line-height: 1.6;
+  color: var(--muted);
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+/* Cards */
+.about-card {
+  background: var(--card);
+  border-radius: 16px;
+  padding: 32px;
+  box-shadow: var(--shadow);
+  border: 1px solid var(--border);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.about-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-deep);
+}
+
+.about-card h2 {
+  font-size: 1.5rem;
+  margin: 0 0 16px;
+  color: var(--brand);
+}
+
+.about-card p {
+  line-height: 1.7;
+  color: var(--text);
+  margin: 0;
+}
+
+/* Hero Card Special Style */
+.hero-card {
+  border-left: 4px solid var(--brand);
+}
+
+/* Grid Layout */
+.about-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 32px;
+}
+
+@media (min-width: 768px) {
+  .about-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}

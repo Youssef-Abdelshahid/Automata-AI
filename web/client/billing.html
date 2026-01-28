@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Automata AI - Billing</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <link rel="stylesheet" href="./styles/global.css">
+    <link rel="stylesheet" href="./styles/header.css">
+    <link rel="stylesheet" href="./styles/billing.css" />
+  </head>
+  <body>
+  <!-- Navbar -->
+<header id="header"></header>
+
+    <main class="page">
+      <section class="card">
+        <div class="card-head">
+          <div>
+            <h1>Billing</h1>
+            <p class="muted">
+              Activate Power User to unlock enterprise features and dedicated
+              support.
+            </p>
+          </div>
+          <span class="pill">Power User</span>
+        </div>
+
+        <div class="grid">
+          <div class="panel">
+            <h2>Plan Summary</h2>
+            <p class="muted">
+              Annual subscription with custom throughput limits and SLAs.
+            </p>
+            <ul>
+              <li>Dedicated optimization experts</li>
+              <li>Enterprise governance controls</li>
+              <li>Priority support and onboarding</li>
+            </ul>
+          </div>
+          <div class="panel payment-panel" id="paymentPanel">
+            <h2>Payment Method</h2>
+            <p class="muted">
+              Add a billing contact and payment method to continue.
+            </p>
+            <button id="addPaymentBtn" class="billing-btn billing-btn-ghost" type="button">
+              Add Payment Method
+            </button>
+            <p id="paymentStatus" class="status" role="status" aria-live="polite">
+              No payment method added.
+            </p>
+            <form id="paymentForm" class="payment-form" novalidate>
+              <div class="field">
+                <label for="cardName">Cardholder name</label>
+                <input
+                  id="cardName"
+                  name="cardName"
+                  type="text"
+                  placeholder="Automata AI"
+                  autocomplete="cc-name"
+                  required
+                />
+                <div class="error" id="cardNameErr" role="alert"></div>
+              </div>
+
+              <div class="field">
+                <label for="cardNumber">Card number</label>
+                <input
+                  id="cardNumber"
+                  name="cardNumber"
+                  type="text"
+                  inputmode="numeric"
+                  placeholder="1234 5678 9012 3456"
+                  autocomplete="cc-number"
+                  required
+                />
+                <div class="error" id="cardNumberErr" role="alert"></div>
+              </div>
+
+              <div class="field-row">
+                <div class="field">
+                  <label for="cardExpiry">Expiry</label>
+                  <input
+                    id="cardExpiry"
+                    name="cardExpiry"
+                    type="text"
+                    inputmode="numeric"
+                    placeholder="MM / YY"
+                    autocomplete="cc-exp"
+                    required
+                  />
+                  <div class="error" id="cardExpiryErr" role="alert"></div>
+                </div>
+                <div class="field">
+                  <label for="cardCvc">CVC</label>
+                  <input
+                    id="cardCvc"
+                    name="cardCvc"
+                    type="text"
+                    inputmode="numeric"
+                    placeholder="123"
+                    autocomplete="cc-csc"
+                    required
+                  />
+                  <div class="error" id="cardCvcErr" role="alert"></div>
+                </div>
+              </div>
+
+              <div class="form-actions">
+                <button class="billing-btn billing-btn-ghost" type="button" id="cancelPaymentBtn">
+                  Cancel
+                </button>
+                <button class="billing-btn billing-btn-solid" type="submit">Save card</button>
+              </div>
+            </form>
+          </div>
+          <div class="panel">
+            <h2>Order Summary</h2>
+            <p class="muted">Custom pricing based on your deployment scale.</p>
+            <div class="summary-row">
+              <span>Annual plan</span>
+              <strong>Custom</strong>
+            </div>
+            <div class="summary-row">
+              <span>Support tier</span>
+              <strong>Dedicated</strong>
+            </div>
+            <div class="summary-row total">
+              <span>Total due</span>
+              <strong>Quote required</strong>
+            </div>
+          </div>
+        </div>
+
+        <div class="card-actions">
+          <button class="billing-btn billing-btn-solid" type="button">
+            Continue to Checkout
+          </button>
+        </div>
+      </section>
+    </main>
+
+    <script type="module" src="./scripts/billing.js"></script>
+<script type="module" src="./scripts/header.js"></script>
+
+  </body>
+</html>
+
+
+

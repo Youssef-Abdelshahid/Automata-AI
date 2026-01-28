@@ -1,0 +1,98 @@
+export const DEVICE_FAMILIES = [
+  {
+    id: "mcu_ultra_low",
+    name: "Ultra-Low-Power MCUs",
+    note: "≤256 KB RAM, ≤2 MB Flash; always-on sensing",
+    specs_hint: {
+      ramKB: [2, 256],
+      flashMB: [0.025, 2],
+      cpuMHz: [12, 120],
+    },
+    frameworks: ["TFLite-Micro", "CMSIS-NN"],
+    model_exts: [".tflite", ".bin", ".h"],
+  },
+  {
+    id: "mcu_mid_dsp",
+    name: "Mid-Range MCUs (DSP/SIMD)",
+    note: "Up to 1 MB RAM, 8 MB Flash",
+    specs_hint: {
+      ramKB: [256, 1024],
+      flashMB: [1, 8],
+      cpuMHz: [80, 240],
+    },
+    frameworks: ["TFLite-Micro", "CMSIS-NN"],
+    model_exts: [".tflite", ".bin", ".h"],
+  },
+  {
+    id: "mcu_ai_high",
+    name: "High-End / AI MCUs",
+    note: "Dual-core options; up to ~2 MB RAM",
+    specs_hint: {
+      ramKB: [512, 2048],
+      flashMB: [2, 16],
+      cpuMHz: [160, 600],
+    },
+    frameworks: ["TFLite-Micro", "CMSIS-NN", "microTVM"],
+    model_exts: [".tflite", ".bin", ".h"],
+  },
+  {
+    id: "mcu_riscv_npu",
+    name: "MCUs with NPU (RISC-V class)",
+    note: "On-die KPU/NPU; SRAM in MBs",
+    specs_hint: {
+      ramKB: [2048, 8192],
+      flashMB: [8, 16],
+      cpuMHz: [400, 800],
+    },
+    frameworks: ["TFLite-Micro", "uTensor"],
+    model_exts: [".kmodel", ".tflite"],
+  },
+  {
+    id: "sbc_light",
+    name: "Lightweight SBCs",
+    note: "Linux-capable; up to 4 GB RAM",
+    specs_hint: {
+      ramKB: [262144, 4194304],
+      flashMB: [16, 64],
+      cpuMHz: [1000, 1800],
+    },
+    frameworks: ["TFLite", "ONNX Runtime"],
+    model_exts: [".tflite", ".onnx"],
+  },
+  {
+    id: "sbc_gpu_npu",
+    name: "SBCs with GPU/NPU",
+    note: "Jetson/Coral class edge AI",
+    specs_hint: {
+      ramKB: [1048576, 8388608],
+      flashMB: [16, 128],
+      cpuMHz: [1200, 2500],
+    },
+    frameworks: ["TensorRT", "TFLite", "ONNX Runtime"],
+    model_exts: [".engine", ".tflite", ".onnx"],
+  },
+  {
+    id: "audio_always_on",
+    name: "Always-On Audio MCUs",
+    note: "Keyword spotting; ultra low power",
+    specs_hint: {
+      ramKB: [128, 512],
+      flashMB: [1, 4],
+      cpuMHz: [32, 160],
+    },
+    frameworks: ["TFLite-Micro", "CMSIS-NN"],
+    model_exts: [".tflite", ".bin", ".h"],
+  },
+  {
+    id: "imu_vibration",
+    name: "IMU/Vibration Sensing MCUs",
+    note: "Predictive maintenance; tiny models",
+    specs_hint: {
+      ramKB: [64, 512],
+      flashMB: [1, 4],
+      cpuMHz: [32, 240],
+    },
+    frameworks: ["TFLite-Micro", "CMSIS-NN"],
+    model_exts: [".tflite", ".bin", ".h"],
+  },
+];

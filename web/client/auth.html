@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Automata AI — Sign In / Register</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <link rel="stylesheet" href="./styles/global.css">
+    <link rel="stylesheet" href="./styles/header.css">
+    <link rel="stylesheet" href="./styles/auth.css" />
+  </head>
+  <body>
+    <main class="center">
+      <section class="card" aria-labelledby="auth-title">
+        <a href="index.html" class="brand-link" aria-label="Back to Home">
+          <div class="brand-centered">
+            <img
+              src="styles/logo/Automata_AI_Logo.webp"
+              alt="Automata AI Logo"
+              width="26"
+              height="26"
+            />
+            <span>Automata AI</span>
+          </div>
+        </a>
+
+        <h1 id="auth-title" class="title">Welcome Back</h1>
+        <p class="subtitle" id="auth-subtitle">
+          Sign in to manage your AI models.
+        </p>
+
+        <form id="authForm" novalidate>
+          <div class="field">
+            <label for="email">Email</label>
+            <input
+              id="email"
+              name="email"
+              type="email"
+              inputmode="email"
+              autocomplete="email"
+              placeholder="demo@automata.ai"
+              required
+            />
+            <div class="error" id="emailErr" role="alert"></div>
+          </div>
+
+          <div class="field">
+            <label for="password">Password</label>
+            <input
+              id="password"
+              name="password"
+              type="password"
+              autocomplete="current-password"
+              placeholder="••••••••"
+              required
+              minlength="8"
+            />
+            <div class="error" id="passwordErr" role="alert"></div>
+          </div>
+
+          <div class="field" id="confirmWrap" hidden>
+            <label for="confirm">Confirm Password</label>
+            <input
+              id="confirm"
+              name="confirm"
+              type="password"
+              autocomplete="new-password"
+              placeholder="Re-enter password"
+              minlength="8"
+            />
+            <div class="error" id="confirmErr" role="alert"></div>
+          </div>
+
+          <button type="submit" id="submitBtn" class="auth-btn auth-btn-solid">
+            Sign In
+          </button>
+        </form>
+
+        <div class="switch">
+          <span id="switchPrompt">New to Automata AI?</span>
+          <button id="switchBtn" class="link-btn" type="button">
+            Create account
+          </button>
+        </div>
+      </section>
+    </main>
+
+    <script type="module" src="./scripts/auth.js"></script>
+  </body>
+</html>

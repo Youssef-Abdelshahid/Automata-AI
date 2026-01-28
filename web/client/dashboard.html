@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Automata AI — Dashboard</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <link rel="stylesheet" href="./styles/global.css" />
+    <link rel="stylesheet" href="./styles/header.css" />
+    <link rel="stylesheet" href="./styles/dashboard.css" />
+  </head>
+  <body>
+    <header id="header"></header>
+
+    <div class="page-content">
+      <section class="page-head">
+        <div class="head-left">
+          <h1>Dashboard</h1>
+          <p class="muted">
+            Welcome back, Automata Demo! Here's an overview of your projects.
+          </p>
+        </div>
+        <div class="head-right">
+          <a class="dashboard-btn dashboard-btn-ghost" href="tasks.html">
+            <svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true">
+              <path
+                d="M5 12h14M12 5l7 7-7 7"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+            </svg>
+            View All Tasks
+          </a>
+          <a class="dashboard-btn dashboard-btn-solid" href="new_task.html">
+            <svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true">
+              <path
+                d="M12 5v14M5 12h14"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+              />
+            </svg>
+            Create New Task
+          </a>
+        </div>
+      </section>
+
+      <main class="container">
+        <section class="stats">
+          <article class="stat-card">
+            <div class="stat-head">
+              <span>Total Tasks</span>
+              <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true">
+                <path
+                  d="M3 5h18M3 12h18M3 19h18"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                />
+              </svg>
+            </div>
+            <div id="statTotal" class="stat-value">0</div>
+          </article>
+
+          <article class="stat-card">
+            <div class="stat-head">
+              <span>Running</span>
+              <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true">
+                <path
+                  d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                />
+              </svg>
+            </div>
+            <div id="statRunning" class="stat-value">0</div>
+          </article>
+
+          <article class="stat-card">
+            <div class="stat-head">
+              <span>Completed</span>
+              <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true">
+                <path
+                  d="M20 6L9 17l-5-5"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                />
+              </svg>
+            </div>
+            <div id="statCompleted" class="stat-value">0</div>
+          </article>
+
+          <article class="stat-card">
+            <div class="stat-head">
+              <span>Failed</span>
+              <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true">
+                <path
+                  d="M12 9v4m0 4h.01M10 2h4l8 8v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h6z"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                />
+              </svg>
+            </div>
+            <div id="statFailed" class="stat-value">0</div>
+          </article>
+        </section>
+
+        <section class="getting-started">
+          <h2>Getting Started</h2>
+          <p class="muted">Ready to build your first edge AI model?</p>
+          <a class="dashboard-btn dashboard-btn-solid" href="new_task.html">
+            <svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true">
+              <path
+                d="M12 5v14M5 12h14"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+              />
+            </svg>
+            Start a New Task
+          </a>
+        </section>
+      </main>
+    </div>
+
+    <script type="module" src="./scripts/dashboard.js"></script>
+    <script type="module" src="./scripts/header.js"></script>
+  </body>
+</html>
