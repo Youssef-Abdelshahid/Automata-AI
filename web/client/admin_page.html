@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+	<link href='https://unpkg.com/boxicons@2.0.9/css/boxicons.min.css' rel='stylesheet'>
+	<link rel="stylesheet" href="./styles/admin_page.css">
+
+	<title>Automata AI - Admin Console</title>
+</head>
+<body>
+
+	<section id="sidebar">
+		<a href="admin_page.html" class="brand">
+			<img class="brand-logo" src="styles/logo/Automata_AI_Logo.webp" alt="Automata AI Logo" width="22" height="22">
+			<span class="text">Automata AI</span>
+		</a>
+		<ul class="side-menu top">
+			<li class="active">
+				<a href="#admin-dashboard" data-section="admin-dashboard">
+					<i class='bx bxs-dashboard' ></i>
+					<span class="text">Dashboard</span>
+				</a>
+			</li>
+			<li>
+				<a href="#manage-users" data-section="manage-users">
+					<i class='bx bxs-group' ></i>
+					<span class="text">Manage Users</span>
+				</a>
+			</li>
+			<li>
+				<a href="#manage-tasks" data-section="manage-tasks">
+					<i class='bx bxs-briefcase-alt' ></i>
+					<span class="text">Manage Tasks</span>
+				</a>
+			</li>
+			<li>
+				<a href="#admin-profile" data-section="admin-profile">
+					<i class='bx bxs-user' ></i>
+					<span class="text">Admin Profile</span>
+				</a>
+			</li>
+		</ul>
+		<ul class="side-menu">
+			<li>
+				<a href="#" class="logout" id="logoutBtn">
+					<i class='bx bxs-log-out-circle' ></i>
+					<span class="text">Logout</span>
+				</a>
+			</li>
+		</ul>
+	</section>
+
+
+	<section id="content">
+		<nav>
+			<i class='bx bx-menu' ></i>
+			<a href="#" class="nav-link">Admin Console</a>
+			<form action="#">
+				<div class="form-input">
+					<input type="search" placeholder="Search tasks, users, or datasets...">
+					<button type="submit" class="search-btn"><i class='bx bx-search' ></i></button>
+				</div>
+			</form>
+			<input type="checkbox" id="switch-mode" hidden>
+			<label for="switch-mode" class="switch-mode"></label>
+			<a href="#" class="notification">
+				<i class='bx bxs-bell' ></i>
+				<span class="num">5</span>
+			</a>
+		</nav>
+
+		<main>
+			<section id="admin-dashboard" class="admin-section active">
+				<div class="head-title">
+					<div class="left">
+						<h1>Admin Dashboard</h1>
+						<ul class="breadcrumb">
+							<li>
+								<a href="#">Dashboard</a>
+							</li>
+							<li><i class='bx bx-chevron-right' ></i></li>
+							<li>
+								<a class="active" href="#">Home</a>
+							</li>
+						</ul>
+					</div>
+					<a href="#" class="btn-download">
+						<i class='bx bxs-cloud-download' ></i>
+						<span class="text">Export Report</span>
+					</a>
+				</div>
+
+				<ul class="box-info">
+					<li>
+						<i class='bx bxs-timer' ></i>
+						<span class="text">
+							<h3>32</h3>
+							<p>Active tasks</p>
+						</span>
+					</li>
+					<li>
+						<i class='bx bxs-user-detail' ></i>
+						<span class="text">
+							<h3>214</h3>
+							<p>Active Users</p>
+						</span>
+					</li>
+					<li>
+						<i class='bx bxs-check-shield' ></i>
+						<span class="text">
+							<h3>97%</h3>
+							<p>tasks Completed</p>
+						</span>
+					</li>
+				</ul>
+
+				<div class="table-data">
+					<div class="order">
+						<div class="head">
+							<h3>Recent tasks</h3>
+							<i class='bx bx-search' ></i>
+							<i class='bx bx-filter' ></i>
+						</div>
+						<table>
+							<thead>
+								<tr>
+									<th>Owner</th>
+									<th>Dataset</th>
+									<th>Status</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr>
+									<td>
+										<img src="styles/logo/Automata_AI_Logo.webp" alt="Owner avatar">
+										<p>EdgeLab</p>
+									</td>
+									<td>smart_city_vision</td>
+									<td><span class="status completed">Completed</span></td>
+								</tr>
+								<tr>
+									<td>
+										<img src="styles/logo/Automata_AI_Logo.webp" alt="Owner avatar">
+										<p>AcousticOps</p>
+									</td>
+									<td>acoustic_events_2026</td>
+									<td><span class="status pending">Queued</span></td>
+								</tr>
+								<tr>
+									<td>
+										<img src="styles/logo/Automata_AI_Logo.webp" alt="Owner avatar">
+										<p>SignalForge</p>
+									</td>
+									<td>sensor_fusion_alpha</td>
+									<td><span class="status process">Training</span></td>
+								</tr>
+								<tr>
+									<td>
+										<img src="styles/logo/Automata_AI_Logo.webp" alt="Owner avatar">
+										<p>VisionOps</p>
+									</td>
+									<td>doorbell_people_v2</td>
+									<td><span class="status pending">Queued</span></td>
+								</tr>
+								<tr>
+									<td>
+										<img src="styles/logo/Automata_AI_Logo.webp" alt="Owner avatar">
+										<p>EdgeSystems</p>
+									</td>
+									<td>industrial_defects</td>
+									<td><span class="status completed">Completed</span></td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</section>
+
+			<section id="manage-users" class="admin-section">
+				<div class="section-head">
+					<div>
+						<h2>Manage Users</h2>
+						<p class="muted">Search, review, and update user roles and profiles.</p>
+					</div>
+					<div class="section-tools">
+						<div class="search-bar">
+							<i class='bx bx-search'></i>
+							<input id="userSearch" type="search" placeholder="Search users by name, email, or role...">
+						</div>
+					</div>
+				</div>
+
+				<div class="table-data single">
+					<div class="order">
+						<table>
+							<thead>
+								<tr>
+									<th>User</th>
+									<th>Role</th>
+									<th>Status</th>
+									<th>Actions</th>
+								</tr>
+							</thead>
+							<tbody id="userTableBody">
+								<tr
+									data-name="Automata Demo"
+									data-username="demo"
+									data-email="demo@automata.ai"
+									data-role="Developer"
+									data-bio="Edge AI developer focused on smart vision."
+									data-profile="styles/logo/Automata_AI_Logo.webp"
+								>
+									<td>
+										<div class="user-cell">
+											<img class="table-avatar" src="styles/logo/Automata_AI_Logo.webp" alt="User avatar">
+											<div>
+												<p class="user-name">Automata Demo</p>
+												<span class="user-handle">@demo</span>
+											</div>
+										</div>
+									</td>
+									<td class="user-role">Developer</td>
+									<td><span class="status completed">Active</span></td>
+									<td><button class="btn-action edit-user" type="button">Edit</button></td>
+								</tr>
+								<tr
+									data-name="System Admin"
+									data-username="admin"
+									data-email="admin@automata.ai"
+									data-role="Admin"
+									data-bio="Platform owner and policy administrator."
+									data-profile="styles/logo/Automata_AI_Logo.webp"
+								>
+									<td>
+										<div class="user-cell">
+											<img class="table-avatar" src="styles/logo/Automata_AI_Logo.webp" alt="User avatar">
+											<div>
+												<p class="user-name">System Admin</p>
+												<span class="user-handle">@admin</span>
+											</div>
+										</div>
+									</td>
+									<td class="user-role">Admin</td>
+									<td><span class="status process">Online</span></td>
+									<td><button class="btn-action edit-user" type="button">Edit</button></td>
+								</tr>
+								<tr
+									data-name="Edge Ops"
+									data-username="edgeops"
+									data-email="ops@edgelabs.ai"
+									data-role="Power User"
+									data-bio="Operations lead managing multi-device deployments."
+									data-profile="styles/logo/Automata_AI_Logo.webp"
+								>
+									<td>
+										<div class="user-cell">
+											<img class="table-avatar" src="styles/logo/Automata_AI_Logo.webp" alt="User avatar">
+											<div>
+												<p class="user-name">Edge Ops</p>
+												<span class="user-handle">@edgeops</span>
+											</div>
+										</div>
+									</td>
+									<td class="user-role">Power User</td>
+									<td><span class="status pending">Pending</span></td>
+									<td><button class="btn-action edit-user" type="button">Edit</button></td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
+
+				<div id="userEditor" class="editor" hidden>
+					<div class="editor-head">
+						<div>
+							<h3>Edit user</h3>
+							<p class="muted">Update role, profile, and bio information.</p>
+						</div>
+						<span id="userEditTarget" class="editor-tag"></span>
+					</div>
+					<form id="userEditForm" class="editor-form" novalidate>
+						<div class="field-grid">
+							<div class="field">
+								<label for="userRole">Role</label>
+								<select id="userRole" name="userRole">
+									<option>Developer</option>
+									<option>Power User</option>
+									<option>Admin</option>
+								</select>
+							</div>
+							<div class="field">
+								<label for="userProfile">Profile image URL</label>
+								<input id="userProfile" name="userProfile" type="text" placeholder="https://">
+							</div>
+							<div class="field">
+								<label for="userUsername">Username</label>
+								<input id="userUsername" name="userUsername" type="text" placeholder="edgeops">
+							</div>
+							<div class="field">
+								<label for="userName">Name</label>
+								<input id="userName" name="userName" type="text" placeholder="Edge Ops">
+							</div>
+							<div class="field field-full">
+								<label for="userBio">Bio</label>
+								<textarea id="userBio" name="userBio" rows="3" placeholder="Short bio"></textarea>
+							</div>
+						</div>
+						<div class="editor-actions">
+							<button id="cancelUserEdit" class="btn-ghost" type="button">Cancel</button>
+							<button class="btn-solid" type="submit">Save changes</button>
+						</div>
+					</form>
+				</div>
+			</section>
+
+			<section id="manage-tasks" class="admin-section">
+				<div class="section-head">
+					<div>
+						<h2>Manage Tasks</h2>
+						<p class="muted">Review tasks, update visibility, and edit task metadata.</p>
+					</div>
+					<div class="section-tools">
+						<div class="search-bar">
+							<i class='bx bx-search'></i>
+							<input id="taskSearch" type="search" placeholder="Search tasks by title or device family...">
+						</div>
+					</div>
+				</div>
+
+				<div class="table-data single">
+					<div class="order">
+						<table>
+							<thead>
+								<tr>
+									<th>Task</th>
+									<th>Visibility</th>
+									<th>Status</th>
+									<th>Actions</th>
+								</tr>
+							</thead>
+							<tbody id="taskTableBody">
+								<tr
+									data-title="doorbell_people_v2"
+									data-desc="Person detection optimized for low power doorbells."
+									data-visibility="Public"
+									data-access=""
+								>
+									<td>
+										<div class="task-cell">
+											<p class="task-title">doorbell_people_v2</p>
+											<span class="task-desc">Person detection optimized for low power doorbells.</span>
+										</div>
+									</td>
+									<td class="task-visibility">Public</td>
+									<td><span class="status process">Training</span></td>
+									<td>
+										<div class="action-group">
+											<button class="btn-action edit-task" type="button">Edit</button>
+											<button class="btn-action danger delete-task" type="button">Delete</button>
+										</div>
+									</td>
+								</tr>
+								<tr
+									data-title="industrial_defects"
+									data-desc="Surface defect classifier for industrial vision lines."
+									data-visibility="Private"
+									data-access="edgeops, visionops"
+								>
+									<td>
+										<div class="task-cell">
+											<p class="task-title">industrial_defects</p>
+											<span class="task-desc">Surface defect classifier for industrial vision lines.</span>
+										</div>
+									</td>
+									<td class="task-visibility">Private (2 users)</td>
+									<td><span class="status completed">Completed</span></td>
+									<td>
+										<div class="action-group">
+											<button class="btn-action edit-task" type="button">Edit</button>
+											<button class="btn-action danger delete-task" type="button">Delete</button>
+										</div>
+									</td>
+								</tr>
+								<tr
+									data-title="smart_city_vision"
+									data-desc="Traffic and incident detection for edge GPU clusters."
+									data-visibility="Public"
+									data-access=""
+								>
+									<td>
+										<div class="task-cell">
+											<p class="task-title">smart_city_vision</p>
+											<span class="task-desc">Traffic and incident detection for edge GPU clusters.</span>
+										</div>
+									</td>
+									<td class="task-visibility">Public</td>
+									<td><span class="status pending">Queued</span></td>
+									<td>
+										<div class="action-group">
+											<button class="btn-action edit-task" type="button">Edit</button>
+											<button class="btn-action danger delete-task" type="button">Delete</button>
+										</div>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
+
+				<div id="taskEditor" class="editor" hidden>
+					<div class="editor-head">
+						<div>
+							<h3>Edit task</h3>
+							<p class="muted">Update task title, description, and visibility.</p>
+						</div>
+						<span id="taskEditTarget" class="editor-tag"></span>
+					</div>
+					<form id="taskEditForm" class="editor-form" novalidate>
+						<div class="field-grid">
+							<div class="field">
+								<label for="taskTitle">Task title</label>
+								<input id="taskTitle" name="taskTitle" type="text" placeholder="task_title">
+							</div>
+							<div class="field">
+								<label for="taskVisibility">Visibility</label>
+								<select id="taskVisibility" name="taskVisibility">
+									<option>Public</option>
+									<option>Private</option>
+								</select>
+							</div>
+							<div class="field field-full">
+								<label for="taskDesc">Task description</label>
+								<textarea id="taskDesc" name="taskDesc" rows="3" placeholder="Describe the task"></textarea>
+							</div>
+							<div class="field field-full" id="taskAccessField">
+								<label for="taskAccess">Private access list</label>
+								<input id="taskAccess" name="taskAccess" type="text" placeholder="usernames or emails, comma separated">
+							</div>
+						</div>
+						<div class="editor-actions">
+							<button id="cancelTaskEdit" class="btn-ghost" type="button">Cancel</button>
+							<button class="btn-solid" type="submit">Save changes</button>
+						</div>
+					</form>
+				</div>
+			</section>
+
+			<section id="admin-profile" class="admin-section">
+				<div class="section-head">
+					<div>
+						<h2>Admin Profile</h2>
+						<p class="muted">Update your account details and profile information.</p>
+					</div>
+				</div>
+
+				<div class="profile-card">
+					<div class="profile-head">
+						<div>
+							<h3>Manage your admin details</h3>
+							<p class="muted">Keep your credentials and profile up to date.</p>
+						</div>
+						<div class="avatar-block">
+							<img id="profileAvatar" src="styles/logo/Automata_AI_Logo.webp" alt="Admin avatar">
+							<span id="profileRole" class="role-pill">Admin</span>
+						</div>
+					</div>
+
+					<form id="adminProfileForm" novalidate>
+						<div class="field-grid">
+							<div class="field">
+								<label for="adminName">Name</label>
+								<input id="adminName" name="adminName" type="text" placeholder="System Admin" required>
+							</div>
+							<div class="field">
+								<label for="adminUsername">Username</label>
+								<input id="adminUsername" name="adminUsername" type="text" placeholder="admin" required>
+							</div>
+							<div class="field">
+								<label for="adminEmail">Email</label>
+								<input id="adminEmail" name="adminEmail" type="email" placeholder="admin@automata.ai" required>
+							</div>
+							<div class="field">
+								<label for="adminAvatarUrl">Profile image URL</label>
+								<input id="adminAvatarUrl" name="adminAvatarUrl" type="text" placeholder="https://">
+							</div>
+							<div class="field field-full">
+								<label for="adminBio">Bio</label>
+								<textarea id="adminBio" name="adminBio" rows="3" placeholder="Share a short admin bio."></textarea>
+							</div>
+						</div>
+						<div class="editor-actions">
+							<span id="profileStatus" class="status" role="status" aria-live="polite"></span>
+							<button class="btn-solid" type="submit">Save changes</button>
+						</div>
+					</form>
+				</div>
+			</section>
+		</main>
+	</section>	
+	<script src="./scripts/admin_page.js"></script>
+</body>
+</html>

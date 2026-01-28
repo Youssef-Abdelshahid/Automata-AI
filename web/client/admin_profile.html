@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Automata AI – admin profile.</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+
+    <link rel="stylesheet" href="./styles/global.css" />
+    <link rel="stylesheet" href="./styles/header.css" />
+    <link rel="stylesheet" href="./styles/admin_profile.css" />
+  </head>
+
+  <body>
+    <header id="header"></header>
+
+    <main class="page">
+      <section class="profile-card">
+        <div class="profile-head">
+          <div>
+            <p class="eyebrow">Admin Profile</p>
+            <h1>Manage your account</h1>
+            <p class="muted">Update your admin details and public profile.</p>
+          </div>
+          <div class="avatar-block">
+            <img id="profileAvatar" src="styles/logo/Automata_AI_Logo.webp" alt="Admin avatar" />
+            <span id="profileRole" class="role-pill">Admin</span>
+          </div>
+        </div>
+
+        <form id="adminProfileForm" novalidate>
+          <div class="field-grid">
+            <div class="field">
+              <label for="adminName">Name</label>
+              <input id="adminName" name="adminName" type="text" placeholder="System Admin" required />
+            </div>
+            <div class="field">
+              <label for="adminUsername">Username</label>
+              <input id="adminUsername" name="adminUsername" type="text" placeholder="admin" required />
+            </div>
+            <div class="field">
+              <label for="adminEmail">Email</label>
+              <input id="adminEmail" name="adminEmail" type="email" placeholder="admin@automata.ai" required />
+            </div>
+            <div class="field">
+              <label for="adminAvatarUrl">Profile image URL</label>
+              <input id="adminAvatarUrl" name="adminAvatarUrl" type="text" placeholder="https://..." />
+            </div>
+            <div class="field field-full">
+              <label for="adminBio">Bio</label>
+              <textarea id="adminBio" name="adminBio" rows="3" placeholder="Share a short admin bio."></textarea>
+            </div>
+          </div>
+          <div class="form-actions">
+            <span id="profileStatus" class="status" role="status" aria-live="polite"></span>
+            <button class="btn btn-solid" type="submit">Save changes</button>
+          </div>
+        </form>
+      </section>
+    </main>
+
+    <script type="module" src="./scripts/header.js"></script>
+    <script type="module" src="./scripts/admin_profile.js"></script>
+  </body>
+</html>
