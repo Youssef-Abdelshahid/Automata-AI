@@ -1,0 +1,53 @@
+#pip install -r api_requirements.txt
+
+# for running:
+# cd "automl\api"
+# uvicorn automl.api.app:app --reload
+
+# -------------------------
+# API
+# -------------------------
+fastapi
+uvicorn[standard]
+python-multipart
+
+# -------------------------
+# Core scientific stack
+# -------------------------
+numpy
+pandas
+scikit-learn
+joblib
+
+# -------------------------
+# Deep learning
+# -------------------------
+torch
+torchvision
+torchaudio
+
+tensorflow
+tensorflow-probability
+
+# -------------------------
+# Model export
+# -------------------------
+onnx
+skl2onnx
+onnx_tf
+m2cgen
+wheel
+tensorrt
+TF-Keras
+
+# -------------------------
+# Media + utilities
+# -------------------------
+Pillow
+soundfile
+tqdm
+
+# -------------------------
+# Reporting
+# -------------------------
+reportlab
