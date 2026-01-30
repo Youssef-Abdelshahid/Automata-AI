@@ -160,7 +160,7 @@
 .thead,
 .trow {
   display: grid;
-  grid-template-columns: 140px 1.5fr 1fr 100px 150px 140px 120px;
+  grid-template-columns: 150px 1.5fr 1fr 100px 150px 140px 120px;
   gap: 14px;
   align-items: center;
   padding: 14px 16px;

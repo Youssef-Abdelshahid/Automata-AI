@@ -58,6 +58,16 @@ const RUNNING_SET = new Set([
 ]);
 const ALLOWED_TYPES = new Set(["image", "audio", "sensor"]);
 
+const ORDER = [
+  "queued",
+  "preprocessing",
+  "training",
+  "optimizing",
+  "packaging",
+  "completed",
+  "failed",
+];
+
 function normalizeTask(t, idx = 0) {
   const id = t?.id || `task_${Date.now().toString(36)}_${idx}`;
   const title = t?.title || "Untitled Task";
@@ -314,15 +324,28 @@ function render() {
 
 function mergeSnapshot(local, snap) {
   if (!snap) return local;
+
+  const statusVal = snap.status?.status || snap.sched_state || local.status || "queued";
+  // We don't have normalizeStatus here but we can just trust the API or simple check
+  // Actually, let's keep it simple as it was, but extract correctly.
+
+  // Map stage_idx to string phase if available
+  let phase = snap.phase || local.phase;
+  if (snap.status?.stage_idx !== undefined && ORDER[snap.status.stage_idx]) {
+    phase = ORDER[snap.status.stage_idx];
+  }
+
   return {
     ...local,
-    status: snap.status?.status || snap.sched_state || snap.phase || local.status,
-    phase: snap.phase || local.phase,
+    status: ALLOWED_STATUS.has(statusVal) ? statusVal : local.status,
+    phase: phase,
     progress:
       typeof snap.progress === "number" ? snap.progress : local.progress,
     metrics: snap.metrics || local.metrics,
     model_id: snap.model_id || local.model_id,
     asset_paths: snap.asset_paths || local.asset_paths,
+    device_family: snap.device_family || local.device_family,
+    errorMessage: snap.error || local.errorMessage,
     updatedAt: Date.now(),
   };
 }
