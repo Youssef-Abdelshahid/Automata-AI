@@ -56,6 +56,16 @@ const RUNNING_SET = new Set([
   "packaging",
 ]);
 
+const ORDER = [
+  "queued",
+  "preprocessing",
+  "training",
+  "optimizing",
+  "packaging",
+  "completed",
+  "failed",
+];
+
 function readTasks() {
   try {
     const raw = localStorage.getItem("tasks");
@@ -74,8 +84,6 @@ function saveSeedIfEmpty() {
 }
 saveSeedIfEmpty();
 
-
-// ... (omitted unchanged lines)
 const els = {
   total: document.getElementById("statTotal"),
   running: document.getElementById("statRunning"),
@@ -111,17 +119,26 @@ function normalizeStatus(s, fallback) {
 }
 function mergeSnapshot(local, snap) {
   if (!snap) return local;
-  const next = normalizeStatus(snap.status?.status || snap.sched_state || snap.phase, local.status);
+
+  const statusVal = snap.status?.status || snap.sched_state || local.status || "queued";
+  const next = normalizeStatus(statusVal, local.status);
+
+  let phase = snap.phase || local.phase;
+  if (snap.status?.stage_idx !== undefined && ORDER[snap.status.stage_idx]) {
+    phase = ORDER[snap.status.stage_idx];
+  }
+
   return {
     ...local,
     status: next,
-    phase: snap.phase ?? local.phase,
+    phase: phase,
     progress:
       typeof snap.progress === "number" ? snap.progress : local.progress,
     metrics: snap.metrics || local.metrics,
     asset_paths: snap.asset_paths || local.asset_paths,
     model_id: snap.model_id || local.model_id,
-    device_family: snap.device_family || local.device_family,
+    device_family: snap.device_family || local.device_family, 
+    errorMessage: snap.error || local.errorMessage,
     updatedAt: Date.now(),
   };
 }
